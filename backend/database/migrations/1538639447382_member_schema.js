@@ -5,8 +5,11 @@ const Schema = use('Schema')
 class MemberSchema extends Schema {
   up () {
     this.create('members', (table) => {
-      table.increments()
-      table.string('email')
+      table.increments().primary()
+      table.string('email').unique().notNullable()
+      table.string('password').notNullable()
+      table.string('userName').defaultTo('newUser')
+      table.string('profilePic') //FIXME: default figure for new user
       table.timestamps()
     })
   }
