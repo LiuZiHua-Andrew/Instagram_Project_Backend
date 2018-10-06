@@ -26,4 +26,5 @@ Route.put('/api/updatePortrait','MemberController.updatePortrait')
 //Post Table
 Route.post('/api/postIns','PostController.postIns')
 
-//Comment Table
+//Like Table
+Route.post('api/like','LikeController.like')

@@ -1,57 +1,43 @@
 'use strict'
-
+const Member = use('App/Models/Member')
+const Post = use('App/Models/Post')
+const Like = use('App/Models/Like')
 /**
  * Resourceful controller for interacting with likes
  */
 class LikeController {
-  /**
-   * Show a list of all likes.
-   * GET likes
-   */
-  async index ({ request, response, view }) {
+
+  /*like
+  request{
+    userEmail:'',
+    postID:''
+  }
+  response{
+    status: "Success/Fail",
+    reason: (When status is Fail)
+  }
+  */
+  async like({request,response}){
+    try{
+      const member = await Member.findBy('email',request.input('userEmail'))
+
+      const like = new Like();
+      like.MemberID = member.id
+      like.PostID = request.input('postID')
+      await like.save();
+
+      return response.json({
+        status: "Success"
+      });
+    }catch(err){
+      console.log(err)
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new like.
-   * GET likes/create
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new like.
-   * POST likes
-   */
-  async store ({ request, response }) {
-  }
-
-  /**
-   * Display a single like.
-   * GET likes/:id
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing like.
-   * GET likes/:id/edit
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update like details.
-   * PUT or PATCH likes/:id
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a like with id.
-   * DELETE likes/:id
-   */
-  async destroy ({ params, request, response }) {
-  }
 }
 
 module.exports = LikeController
