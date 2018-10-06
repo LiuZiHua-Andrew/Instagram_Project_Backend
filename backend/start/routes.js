@@ -17,3 +17,11 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
+
+// Member Table
+Route.post('/api/register','MemberController.register')
+Route.get('/api/login','MemberController.login')
+
+
+//Post Table
+Route.post('/api/postIns','PostController.postIns')

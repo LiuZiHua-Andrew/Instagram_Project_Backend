@@ -1,57 +1,105 @@
-'use strict'
-
+"use strict";
+const Encryption = use("Encryption");
+const Member = use('App/Models/Member')
 /**
  * Resourceful controller for interacting with members
  */
 class MemberController {
-  /**
-   * Show a list of all members.
-   * GET members
-   */
-  async index ({ request, response, view }) {
+  /*Login
+  request{
+    loginEmail:'',
+    loginPass:''
+  }
+  response{
+    status:'Success/Fail',
+    reason:(Only when status is Fail)
+  }
+  */
+  async login({ request, response }) {
+    try {
+      let member = await Member.findBy('email',request.input('loginEmail'))
+
+      //Whether email exists
+      if(member === null){
+        return  response.json({
+          status: "Fail",
+          reason: "Email Not Exists"
+        });
+      }
+
+      const password = Encryption.decrypt(member.password);
+      //Whether password is correct
+      if(password != request.input('loginPassword')){
+        return  response.json({
+          status: "Fail",
+          reason: "Password is incorrect"
+        });
+      }
+
+      //Login successes
+      if(member != null && password === request.input('loginPassword')){
+        return  response.json({
+          status: "Success",
+          loginEmail:request.input('loginEmail')
+        });
+      }
+
+    } catch (err) {
+      console.log(err);
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new member.
-   * GET members/create
-   */
-  async create ({ request, response, view }) {
+  /*Register()
+  request: {
+      registerPassword:'',
+      registerEmail:''
+    }
+  response:{
+    registerEmail:'',
+    status:Success/Fail,
+    reason:(Only when status is Fail)
   }
+  */
+  async register({ request, response }) {
+    try {
+      const requestData = request.all();
 
-  /**
-   * Create/save a new member.
-   * POST members
-   */
-  async store ({ request, response }) {
-  }
+      //Use Encryption to encrypt user plain password
+      const encrypted = Encryption.encrypt(requestData.registerPassword);
+      const userEmail = await Database.table("members")
+        .where("email", requestData.registerEmail)
+        .select("email");
 
-  /**
-   * Display a single member.
-   * GET members/:id
-   */
-  async show ({ params, request, response, view }) {
-  }
+      //email is not exist -> new user
+      if (userEmail.length <= 0) {
+        const member = new Member();
+        member.email = requestData.registerEmail;
+        member.password = encrypted;
+        await member.save();
 
-  /**
-   * Render a form to update an existing member.
-   * GET members/:id/edit
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update member details.
-   * PUT or PATCH members/:id
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a member with id.
-   * DELETE members/:id
-   */
-  async destroy ({ params, request, response }) {
+        return response.json({
+          registerEmail: requestData.registerEmail,
+          status: "Success"
+        });
+      } else {
+        return response.json({
+          registerEmail: requestData.registerEmail,
+          status: "Fail",
+          reason: "Email Existed"
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
   }
 }
 
-module.exports = MemberController
+module.exports = MemberController;

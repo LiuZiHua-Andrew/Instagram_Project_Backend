@@ -133,7 +133,7 @@ module.exports = {
     | is to true. Otherwise everything is processed manually.
     |
     */
-    processManually: []
+    processManually: [],
 
     /*
     |--------------------------------------------------------------------------
@@ -153,5 +153,8 @@ module.exports = {
     | }
     |
     */
+   uploads: {
+    maxSize: '10mb'
+  }
   }
 }

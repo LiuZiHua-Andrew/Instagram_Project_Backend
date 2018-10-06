@@ -1,57 +1,37 @@
-'use strict'
-
+"use strict";
+const imagePath = "UserPost";
+const Helpers = use("Helpers");
+const Drive = use("Drive")
 /**
  * Resourceful controller for interacting with posts
  */
 class PostController {
-  /**
-   * Show a list of all posts.
-   * GET posts
-   */
-  async index ({ request, response, view }) {
-  }
+  async postIns({ request, response }) {
+    console.log(await Drive.exists('public/UserPost/1538815728810.jpeg'))
+    const postPic = request.file("postPic", {
+      types: ["image"],
+      size: "15mb"
+    });
+    console.log(Drive.disk)
+    //Change File Name
+    let fileName = `${new Date().getTime()}.${postPic.subtype}`;
 
-  /**
-   * Render a form to be used for creating a new post.
-   * GET posts/create
-   */
-  async create ({ request, response, view }) {
-  }
+    //Giving File Path
+    let filePath = imagePath + "/" + fileName;
+    const uploadPath = Helpers.publicPath(imagePath);
 
-  /**
-   * Create/save a new post.
-   * POST posts
-   */
-  async store ({ request, response }) {
-  }
+    //Save File
+    await postPic.move(uploadPath, {
+      name : fileName
+    });
 
-  /**
-   * Display a single post.
-   * GET posts/:id
-   */
-  async show ({ params, request, response, view }) {
-  }
+    //Server Error
+    if (!postPic.moved()) {
+      return postPic.error();
+    }
 
-  /**
-   * Render a form to update an existing post.
-   * GET posts/:id/edit
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update post details.
-   * PUT or PATCH posts/:id
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a post with id.
-   * DELETE posts/:id
-   */
-  async destroy ({ params, request, response }) {
+    return "File Moved";
   }
 }
 
-module.exports = PostController
+module.exports = PostController;
