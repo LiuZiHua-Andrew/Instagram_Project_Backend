@@ -21,7 +21,9 @@ Route.on('/').render('welcome')
 // Member Table
 Route.post('/api/register','MemberController.register')
 Route.get('/api/login','MemberController.login')
-
+Route.put('/api/updatePortrait','MemberController.updatePortrait')
 
 //Post Table
 Route.post('/api/postIns','PostController.postIns')
+
+//Comment Table
