@@ -1,56 +1,43 @@
 'use strict'
+const Comment = use('App/Models/Comment')
+const Member = use('App/Models/Member')
 
 /**
  * Resourceful controller for interacting with comments
  */
 class CommentController {
-  /**
-   * Show a list of all comments.
-   * GET comments
-   */
-  async index ({ request, response, view }) {
-  }
 
-  /**
-   * Render a form to be used for creating a new comment.
-   * GET comments/create
-   */
-  async create ({ request, response, view }) {
+  /*comment
+  request{
+    userEmail:'',
+    postID:'',
+    comment:''
   }
-
-  /**
-   * Create/save a new comment.
-   * POST comments
-   */
-  async store ({ request, response }) {
+  response{
+    status: "Success/Fail",
+    reason: (When status is Fail)
   }
+  */
+  async comment(){
+    try{
+      const member = await Member.findBy('email',request.input('userEmail'))
 
-  /**
-   * Display a single comment.
-   * GET comments/:id
-   */
-  async show ({ params, request, response, view }) {
-  }
+      const comment = new Comment();
+      comment.MemberID = member.id
+      comment.PostID = request.input('postID')
+      comment.comment = request.input('comment')
+      await comment.save();
 
-  /**
-   * Render a form to update an existing comment.
-   * GET comments/:id/edit
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update comment details.
-   * PUT or PATCH comments/:id
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a comment with id.
-   * DELETE comments/:id
-   */
-  async destroy ({ params, request, response }) {
+      return response.json({
+        status: "Success"
+      });
+    }catch(err){
+      console.log(err)
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
   }
 }
 

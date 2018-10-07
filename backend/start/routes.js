@@ -22,9 +22,20 @@ Route.on('/').render('welcome')
 Route.post('/api/register','MemberController.register')
 Route.get('/api/login','MemberController.login')
 Route.put('/api/updatePortrait','MemberController.updatePortrait')
+Route.get('api/searchUser/:userName','MemberController.searchUser')
+Route.get('api/acquireSelfProfile/:userEmail','MemberController.acquireSelfProfile')
+Route.get('api/acquireOthersProfile/:userEmail/:othersEmail','MemberController.acquireOthersProfile')
 
 //Post Table
 Route.post('/api/postIns','PostController.postIns')
 
 //Like Table
 Route.post('api/like','LikeController.like')
+Route.get('api/whoLike/:postID','LikeController.whoLike')
+
+//Comment Table
+Route.post('api/comment','CommentController.comment')
+
+//Follow Table
+Route.post('api/follow','FollowingController.follow')
+Route.delete('api/follow','FollowingController.unfollow')

@@ -1,11 +1,123 @@
 "use strict";
 const Encryption = use("Encryption");
-const Member = use('App/Models/Member')
-const imagePath = "UserPortrait"
+const Member = use("App/Models/Member");
+const imagePath = "UserPortrait";
+const Database = use("Database");
 /**
  * Resourceful controller for interacting with members
  */
 class MemberController {
+  /*
+  response{
+        status: "Success/Fail",
+        user: member,
+        following: following,
+        follower: follower,
+        posts: posts,
+        isFollow:isFollow,
+        reason:(When status is Fail)
+  }
+  */
+  async acquireOthersProfile({ params, response }) {
+    try {
+      let isFollow = await Database.table("followings")
+        .where({ MemberID: params.userEmail })
+        .where({ FollowingMemberID: params.othersEmail });
+
+      if (isFollow.length === 0) {
+        isFollow = false;
+      } else {
+        isFollow = true;
+      }
+      const member = await Member.findBy("email", params.othersEmail);
+      const following = Database.table("followings").where({
+        MemberID: member.id
+      });
+      const follower = Database.table("followings").where({
+        FollowingMemberID: member.id
+      });
+      const posts = Database.table("posts").where({ MemberID: member.id });
+
+      return response.json({
+        status: "Success",
+        user: member,
+        following: following,
+        follower: follower,
+        posts: posts,
+        isFollow: isFollow
+      });
+    } catch (error) {
+      console.log(error);
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
+  }
+
+  /*
+  response{
+    status:"Success/Fail",
+    user:,
+    following:,
+    follower:,
+    posts:,
+    reason:(When status is Fail
+  }
+  */
+  async acquireSelfProfile({ params, response }) {
+    try {
+      const member = await Member.findBy("email", params.userEmail);
+      const following = await Database.table("followings").where({
+        MemberID: member.id
+      });
+      const follower = await Database.table("followings").where({
+        FollowingMemberID: member.id
+      });
+      const posts = await Database.table("posts").where({
+        MemberID: member.id
+      });
+
+      return response.json({
+        status: "Success",
+        user: member,
+        following: following,
+        follower: follower,
+        posts: posts
+      });
+    } catch (error) {
+      console.log(error);
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
+  }
+
+  /*
+  response{
+    status:'Success/Fail',
+    reason:(When status is Fail),
+    user:
+  }
+  */
+  async searchUser({ params, response }) {
+    try {
+      const user = await Database.table("members").where({
+        userName: params.userName
+      });
+      response.json({
+        status: "Success",
+        user: user
+      });
+    } catch (error) {
+      console.log(error);
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
+  }
 
   /*uploadPortrait
   request{
@@ -17,8 +129,8 @@ class MemberController {
     reason:(When status is Fail)
   }
   */
-  async updatePortrait({request,response}){
-    try{
+  async updatePortrait({ request, response }) {
+    try {
       const postPic = request.file("userPortrait", {
         types: ["image"],
         size: "15mb"
@@ -32,7 +144,7 @@ class MemberController {
 
       //Save File
       await postPic.move(uploadPath, {
-        name : fileName
+        name: fileName
       });
 
       //Server Error
@@ -40,16 +152,15 @@ class MemberController {
         return postPic.error();
       }
 
-      const member = await Member.findBy('email',request.input('userEmail'))
-      member.merge({profilePic : filePath})
-      await member.save()
+      const member = await Member.findBy("email", request.input("userEmail"));
+      member.merge({ profilePic: filePath });
+      await member.save();
 
       return response.json({
         status: "Success"
       });
-
-    } catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
       return response.json({
         status: "Fail",
         reason: "Server Error"
@@ -69,11 +180,11 @@ class MemberController {
   */
   async login({ request, response }) {
     try {
-      let member = await Member.findBy('email',request.input('loginEmail'))
+      let member = await Member.findBy("email", request.input("loginEmail"));
 
       //Whether email exists
-      if(member === null){
-        return  response.json({
+      if (member === null) {
+        return response.json({
           status: "Fail",
           reason: "Email Not Exists"
         });
@@ -81,21 +192,20 @@ class MemberController {
 
       const password = Encryption.decrypt(member.password);
       //Whether password is correct
-      if(password != request.input('loginPassword')){
-        return  response.json({
+      if (password != request.input("loginPassword")) {
+        return response.json({
           status: "Fail",
           reason: "Password is incorrect"
         });
       }
 
       //Login successes
-      if(member != null && password === request.input('loginPassword')){
-        return  response.json({
+      if (member != null && password === request.input("loginPassword")) {
+        return response.json({
           status: "Success",
-          loginEmail:request.input('loginEmail')
+          loginEmail: request.input("loginEmail")
         });
       }
-
     } catch (err) {
       console.log(err);
       return response.json({

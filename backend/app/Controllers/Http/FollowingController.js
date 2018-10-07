@@ -1,57 +1,71 @@
-'use strict'
-
+"use strict";
+const Following = use("App/Models/Following");
+const Member = use("App/Models/Member");
+const Database = use("Database");
 /**
  * Resourceful controller for interacting with followings
  */
 class FollowingController {
-  /**
-   * Show a list of all followings.
-   * GET followings
-   */
-  async index ({ request, response, view }) {
+
+  /*unfollow()
+  request{
+    userEmail:"",
+    followingID:""
+  }
+   response{
+    status:'Success/Fail',
+    reason:(When status is Fail)
+  }
+  */
+  async unfollow({ request, response }) {
+    try {
+      const member = Member.findBy("email", request.input("userEmail"));
+      await Database.table("followings")
+        .where({ MemberID: member.id })
+        .where({ FollowingMemberID: request.input("followingID") })
+        .delete();
+      return response.json({
+        status: "Success"
+      });
+    } catch (error) {
+      console.log(error);
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new following.
-   * GET followings/create
-   */
-  async create ({ request, response, view }) {
+  /*follow
+  request{
+    userEmail:'',
+    followingID:''
+  }
+  response{
+    status:'Success/Fail',
+    reason:(When status is Fail)
   }
 
-  /**
-   * Create/save a new following.
-   * POST followings
-   */
-  async store ({ request, response }) {
-  }
+  */
+  async follow({ request, response }) {
+    try {
+      let following = new Following();
+      const member = Member.findBy("email", request.input("userEmail"));
+      following.MemberID = member.id;
+      following.FollowingMemberID = request.input("followingID");
+      await following.save();
 
-  /**
-   * Display a single following.
-   * GET followings/:id
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing following.
-   * GET followings/:id/edit
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update following details.
-   * PUT or PATCH followings/:id
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a following with id.
-   * DELETE followings/:id
-   */
-  async destroy ({ params, request, response }) {
+      response.json({
+        status: "Success"
+      });
+    } catch (error) {
+      console.log(error);
+      return response.json({
+        status: "Fail",
+        reason: "Server Error"
+      });
+    }
   }
 }
 
-module.exports = FollowingController
+module.exports = FollowingController;
