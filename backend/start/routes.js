@@ -20,7 +20,7 @@ Route.on('/').render('welcome')
 
 // Member Table
 Route.post('/api/register','MemberController.register')
-Route.get('/api/login','MemberController.login')
+Route.post('/api/login','MemberController.login')
 Route.put('/api/updatePortrait','MemberController.updatePortrait')
 Route.get('api/searchUser/:userName','MemberController.searchUser')
 Route.get('api/acquireSelfProfile/:userEmail','MemberController.acquireSelfProfile')
