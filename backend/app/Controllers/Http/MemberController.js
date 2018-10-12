@@ -184,19 +184,13 @@ class MemberController {
 
       //Whether email exists
       if (member === null) {
-        return response.json({
-          status: "Fail",
-          reason: "Email Not Exists"
-        });
+        return response.send('Email Not Existed')
       }
 
       const password = Encryption.decrypt(member.password);
       //Whether password is correct
       if (password != request.input("loginPassword")) {
-        return response.json({
-          status: "Fail",
-          reason: "Password is incorrect"
-        });
+        return response.send('Pass Word Incorrect')
       }
 
       //Login successes
@@ -205,10 +199,7 @@ class MemberController {
       }
     } catch (err) {
       console.log(err);
-      return response.json({
-        status: "Fail",
-        reason: "Server Error"
-      });
+      return response.send('Server Error')
     }
   }
 
@@ -242,18 +233,11 @@ class MemberController {
 
         return response.send('success')
       } else {
-        return response.json({
-          registerEmail: requestData.registerEmail,
-          status: "Fail",
-          reason: "Email Existed"
-        });
+        return response.send('Email Existed')
       }
     } catch (err) {
       console.log(err);
-      return response.json({
-        status: "Fail",
-        reason: "Server Error"
-      });
+      return response.send('Server Error')
     }
   }
 }

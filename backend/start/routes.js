@@ -36,7 +36,8 @@ Route.post('api/like','LikeController.like')
 Route.get('api/whoLike/:postID','LikeController.whoLike')
 
 //Comment Table
-Route.post('api/comment','CommentController.comment')
+Route.post('api/postComment','CommentController.postComment')
+Route.get('/api/acquireComment/:postID','CommentController.acquireComment')
 
 //Follow Table
 Route.post('api/follow','FollowingController.follow')

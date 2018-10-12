@@ -47,7 +47,15 @@ class PostController {
         const comment = await Database.from("comments").where({
           PostID: post.id
         });
-        post.comment = comment;
+        if(comment.length > 0){
+          post.comment = comment[0].comment;
+
+          const commentMember = await Member.findBy("id",comment[0].MemberID)
+          post.commentUser = commentMember.userName
+        }else{
+          post.comment = null
+          post.commentUser = null
+        }
 
         let date = new Date();
         let created_at = new Date(post.created_at);
@@ -63,7 +71,8 @@ class PostController {
         dic.portrait = post.userPortrait;
         dic.photo = post.postPic;
         dic.likes = post.likes;
-        dic.comment = post.comment;
+        dic.commentContent = post.comment;
+        dic.commentUser = post.commentUser
         dic.date = post.timeToNow;
         backArrayData.push(dic);
       }
@@ -134,7 +143,15 @@ class PostController {
         const comment = await Database.from("comments").where({
           PostID: post.id
         });
-        post.comment = comment;
+        if(comment.length > 0){
+          post.comment = comment[0].comment;
+
+          const commentMember = await Member.findBy("id",comment[0].MemberID)
+          post.commentUser = commentMember.userName
+        }else{
+          post.comment = null
+          post.commentUser = null
+        }
 
         let date = new Date();
         let created_at = new Date(post.created_at);
@@ -150,7 +167,8 @@ class PostController {
         dic.portrait = post.userPortrait;
         dic.photo = post.postPic;
         dic.likes = post.likes;
-        dic.comment = post.comment;
+        dic.commentContent = post.comment;
+        dic.commentUser = post.commentUser
         dic.date = post.timeToNow;
         backArrayData.push(dic);
       }
