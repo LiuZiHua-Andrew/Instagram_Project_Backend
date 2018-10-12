@@ -28,6 +28,8 @@ Route.get('api/acquireOthersProfile/:userEmail/:othersEmail','MemberController.a
 
 //Post Table
 Route.post('/api/postIns','PostController.postIns')
+Route.get('/api/acquireLatestPostsByTime/:userEmail','PostController.acquireLatestPostsByTime')
+Route.get('/api/acquireOldPostsByTime/:userEmail/:postID','PostController.acquireOldPostsByTime')
 
 //Like Table
 Route.post('api/like','LikeController.like')
