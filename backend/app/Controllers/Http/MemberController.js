@@ -201,10 +201,7 @@ class MemberController {
 
       //Login successes
       if (member != null && password === request.input("loginPassword")) {
-        return response.json({
-          status: "Success",
-          loginEmail: request.input("loginEmail")
-        });
+        return response.send('success')
       }
     } catch (err) {
       console.log(err);
@@ -243,10 +240,7 @@ class MemberController {
         member.password = encrypted;
         await member.save();
 
-        return response.json({
-          registerEmail: requestData.registerEmail,
-          status: "Success"
-        });
+        return response.send('success')
       } else {
         return response.json({
           registerEmail: requestData.registerEmail,
