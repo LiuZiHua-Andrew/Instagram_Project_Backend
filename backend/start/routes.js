@@ -30,6 +30,8 @@ Route.get('api/acquireOthersProfile/:userEmail/:othersEmail','MemberController.a
 Route.post('/api/postIns','PostController.postIns')
 Route.get('/api/acquireLatestPostsByTime/:userEmail','PostController.acquireLatestPostsByTime')
 Route.get('/api/acquireOldPostsByTime/:userEmail/:postID','PostController.acquireOldPostsByTime')
+Route.post('/api/acquireLatestPostsByLocation','PostController.acquireLatestPostsByLocation')
+Route.post('/api/acquireOldPostsByLocation','PostController.acquireOldPostsByLocation')
 
 //Like Table
 Route.post('api/like','LikeController.like')
