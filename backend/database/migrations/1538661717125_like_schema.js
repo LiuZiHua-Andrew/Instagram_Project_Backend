@@ -8,6 +8,7 @@ class LikeSchema extends Schema {
       table.increments()
       table.integer('MemberID').unsigned()
       table.integer('PostID').unsigned().references('id').inTable('posts')
+      table.integer('postFromID').unsigned()
       table.timestamps()
     })
   }

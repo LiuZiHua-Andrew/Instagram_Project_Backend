@@ -5,30 +5,114 @@ const imagePath = "UserPortrait";
 const Database = use("Database");
 
 class MemberController {
+  async acquireLatestActionFromFollower({ params, response }) {
+    try {
+      //email -> likes -> truncate into 10 -> adding event attribute
+      const member = await Member.findBy("email", params.userEmail);
+      const likes = await Database.from("likes").where({
+        postFromID: member.id
+      });
+      likes.slice(0, 10);
+      likes.map(like => {
+        like.event = "like";
+      });
+      //email -> follow -> truncate into 10 -> adding event attribute
+      const followings = await Database.from("followings").where({
+        FollowingMemberID: member.id
+      });
+      followings.slice(0, 10);
+      followings.map(following => {
+        following.event = "follow";
+      });
 
-  async acquireLatestActionFromFollower({params,response}){
-    //email -> like -> truncate into 10 -> adding event attribute
+      //Join two arrays and proceed sort by created_at
+      let activityArray = likes.concat(followings);
+      activityArray.sort(function(a, b) {
+        var keyA = new Date(a.created_at),
+          keyB = new Date(b.created_at);
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
+        return 0;
+      });
+      activityArray.slice(0, 10);
 
-    //email -> follow -> truncate into 10 -> adding event attribute
-
-    //Join two arrays and proceed sort by created_at
-
-    //Find lastFollowEventID and lastLikeEventID
-
-    //Format response
+      for (let index in activityArray) {
+        let activity = activityArray[index];
+        let userEmail = await Member.find(activity.MemberID);
+        activity.userEmail = userEmail.userName;
+      }
+      //Format response
+      response.json({ activityArray });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async acquireOldActionFromFollower({params,response}){
+  /*
+  request{
+    lastLikeID:
+    lastFollowID:
+    userEmail:
+  }
+  */
+  async acquireOldActionFromFollower({ params, request, response }) {
     //email -> like -> truncate into 10 -> adding event attribute
-
+    const member = await Member.findBy("email", params.userEmail);
+    const likes = await Database.from("likes")
+      .where({
+        postFromID: member.id
+      })
+      .where("id", "<", params.lastLikeID);
+    likes.slice(0, 10);
+    likes.map(like => {
+      like.event = "like";
+    });
     //email -> follow -> truncate into 10 -> adding event attribute
-
+    const followings = await Database.from("followings")
+      .where({
+        FollowingMemberID: member.id
+      })
+      .where("id", "<", params.lastFollowID);
+    followings.slice(0, 10);
+    followings.map(following => {
+      following.event = "follow";
+    });
     //Join two arrays and proceed sort by created_at
+    let activityArray = likes.concat(followings);
+    activityArray.sort(function(a, b) {
+      var keyA = new Date(a.created_at),
+        keyB = new Date(b.created_at);
+      if (keyA < keyB) return 1;
+      if (keyA > keyB) return -1;
+      return 0;
+    });
+    activityArray.slice(0, 10);
+
+    for (let index in activityArray) {
+      let activity = activityArray[index];
+      let userEmail = await Member.find(activity.MemberID);
+      console.log(userEmail.userName);
+      activity.userEmail = userEmail.userName;
+    }
 
     //Find lastFollowEventID and lastLikeEventID
-
+    let lastLikeID = 999
+    let lastFollowID = 999
+    activityArray.map(activity => {
+      if(activity.event === 'like'){
+        if(activity.id < lastLikeID){
+          lastLikeID = activity.id
+        }
+      }else{
+        if(activity.id < lastFollowID){
+          lastFollowID = activity.id
+        }
+      }
+    })
     //Format response
+    response.send(JSON.stringify({lastLikeID:lastLikeID,lastFollowID:lastFollowID,activities: activityArray}))
   }
+
   /*
   response{
         status: "Success/Fail",
@@ -206,22 +290,22 @@ class MemberController {
 
       //Whether email exists
       if (member === null) {
-        return response.send('Email Not Existed')
+        return response.send("Email Not Existed");
       }
 
       const password = Encryption.decrypt(member.password);
       //Whether password is correct
       if (password != request.input("loginPassword")) {
-        return response.send('Pass Word Incorrect')
+        return response.send("Pass Word Incorrect");
       }
 
       //Login successes
       if (member != null && password === request.input("loginPassword")) {
-        return response.send('success')
+        return response.send("success");
       }
     } catch (err) {
       console.log(err);
-      return response.send('Server Error')
+      return response.send("Server Error");
     }
   }
 
@@ -253,13 +337,13 @@ class MemberController {
         member.password = encrypted;
         await member.save();
 
-        return response.send('success')
+        return response.send("success");
       } else {
-        return response.send('Email Existed')
+        return response.send("Email Existed");
       }
     } catch (err) {
       console.log(err);
-      return response.send('Server Error')
+      return response.send("Server Error");
     }
   }
 }

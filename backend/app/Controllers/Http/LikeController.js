@@ -58,10 +58,12 @@ class LikeController {
   async like({ request, response }) {
     try {
       const member = await Member.findBy("email", request.input("userEmail"));
+      const post = await Post.find(request.input("postID"))
 
       const like = new Like();
       like.MemberID = member.id;
       like.PostID = request.input("postID");
+      like.postFromID = post.MemberID;
       await like.save();
 
       return response.json({
