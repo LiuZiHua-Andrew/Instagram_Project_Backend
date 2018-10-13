@@ -33,6 +33,7 @@ Route.get('/api/acquireOldPostsByTime/:userEmail/:postID','PostController.acquir
 Route.post('/api/acquireLatestPostsByLocation','PostController.acquireLatestPostsByLocation')
 Route.post('/api/acquireOldPostsByLocation','PostController.acquireOldPostsByLocation')
 
+
 //Like Table
 Route.post('api/like','LikeController.like')
 Route.get('api/whoLike/:postID','LikeController.whoLike')
@@ -44,3 +45,9 @@ Route.get('/api/acquireComment/:postID','CommentController.acquireComment')
 //Follow Table
 Route.post('api/follow','FollowingController.follow')
 Route.delete('api/follow','FollowingController.unfollow')
+
+//Activity Feed
+Route.get('api/acquireLatestFollowing/:userEmail','PostController.acquireLatestFollowing')
+Route.get('api/acquireOldFollowing/:userEmail/:postID','PostController.acquireOldFollowing')
+Route.get('api/acquireLatestActionFromFollower/:userEmail','MemberController.acquireLatestActionFromFollower') //TODO:
+Route.get('api/acquireOldActionFromFollower/:userEmail','MemberController.acquireOldActionFromFollower') //TODO:

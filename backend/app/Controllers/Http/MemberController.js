@@ -3,10 +3,32 @@ const Encryption = use("Encryption");
 const Member = use("App/Models/Member");
 const imagePath = "UserPortrait";
 const Database = use("Database");
-/**
- * Resourceful controller for interacting with members
- */
+
 class MemberController {
+
+  async acquireLatestActionFromFollower({params,response}){
+    //email -> like -> truncate into 10 -> adding event attribute
+
+    //email -> follow -> truncate into 10 -> adding event attribute
+
+    //Join two arrays and proceed sort by created_at
+
+    //Find lastFollowEventID and lastLikeEventID
+
+    //Format response
+  }
+
+  async acquireOldActionFromFollower({params,response}){
+    //email -> like -> truncate into 10 -> adding event attribute
+
+    //email -> follow -> truncate into 10 -> adding event attribute
+
+    //Join two arrays and proceed sort by created_at
+
+    //Find lastFollowEventID and lastLikeEventID
+
+    //Format response
+  }
   /*
   response{
         status: "Success/Fail",

@@ -28,6 +28,152 @@ function GetDistance(lat1, lng1, lat2, lng2) {
 }
 
 class PostController {
+  async acquireLatestFollowing({ params, response }) {
+    try {
+      const member = await Member.findBy("email", params.userEmail);
+      const following = await Database.from("followings").where({
+        MemberID: member.id
+      });
+      let displayUserId = [];
+      // displayUserId.push(member.id);
+      following.map(user => {
+        displayUserId.push(user.FollowingMemberID);
+      });
+
+      const posts = await Database.from("posts").whereIn(
+        "MemberID",
+        displayUserId
+      );
+      posts.sort(function(a, b) {
+        var keyA = new Date(a.created_at),
+          keyB = new Date(b.created_at);
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
+        return 0;
+      });
+      //Truncate into length 10
+      posts.slice(0, 10);
+
+      for (let index in posts) {
+        let post = posts[index];
+        const member = await Member.findBy("id", post.MemberID);
+        post.userPortrait = member.profilePic;
+        post.userName = member.userName;
+
+        const like = await Database.from("likes").where({ PostID: post.id });
+        post.likes = like.length;
+
+        const comment = await Database.from("comments").where({
+          PostID: post.id
+        });
+        if (comment.length > 0) {
+          post.comment = comment[0].comment;
+
+          const commentMember = await Member.findBy("id", comment[0].MemberID);
+          post.commentUser = commentMember.userName;
+        } else {
+          post.comment = null;
+          post.commentUser = null;
+        }
+
+        let date = new Date();
+        let created_at = new Date(post.created_at);
+        post.timeToNow = Math.ceil((date - created_at) / (1000 * 3600));
+      }
+      let backArrayData = [];
+      for (let index in posts) {
+        let post = posts[index];
+        let dic = new Object();
+        dic.postID = post.id;
+        dic.username = post.userName;
+        dic.location = post.location;
+        dic.portrait = post.userPortrait;
+        dic.photo = post.postPic;
+        dic.likes = post.likes;
+        dic.commentContent = post.comment;
+        dic.commentUser = post.commentUser;
+        dic.date = post.timeToNow;
+        backArrayData.push(dic);
+      }
+
+      response.send(JSON.stringify({ data: backArrayData }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async acquireOldFollowing({ params, response }) {
+    try {
+      const member = await Member.findBy("email", params.userEmail);
+      const following = await Database.from("followings").where({
+        MemberID: member.id
+      });
+      let displayUserId = [];
+      // displayUserId.push(member.id);
+      following.map(user => {
+        displayUserId.push(user.FollowingMemberID);
+      });
+
+      const posts = await Database.from("posts")
+        .whereIn("MemberID", displayUserId)
+        .where("id", "<", params.postID);
+      posts.sort(function(a, b) {
+        var keyA = new Date(a.created_at),
+          keyB = new Date(b.created_at);
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
+        return 0;
+      });
+      //Truncate into length 10
+      posts.slice(0, 10);
+
+      for (let index in posts) {
+        let post = posts[index];
+        const member = await Member.findBy("id", post.MemberID);
+        post.userPortrait = member.profilePic;
+        post.userName = member.userName;
+
+        const like = await Database.from("likes").where({ PostID: post.id });
+        post.likes = like.length;
+
+        const comment = await Database.from("comments").where({
+          PostID: post.id
+        });
+        if (comment.length > 0) {
+          post.comment = comment[0].comment;
+
+          const commentMember = await Member.findBy("id", comment[0].MemberID);
+          post.commentUser = commentMember.userName;
+        } else {
+          post.comment = null;
+          post.commentUser = null;
+        }
+
+        let date = new Date();
+        let created_at = new Date(post.created_at);
+        post.timeToNow = Math.ceil((date - created_at) / (1000 * 3600));
+      }
+      let backArrayData = [];
+      for (let index in posts) {
+        let post = posts[index];
+        let dic = new Object();
+        dic.postID = post.id;
+        dic.username = post.userName;
+        dic.location = post.location;
+        dic.portrait = post.userPortrait;
+        dic.photo = post.postPic;
+        dic.likes = post.likes;
+        dic.commentContent = post.comment;
+        dic.commentUser = post.commentUser;
+        dic.date = post.timeToNow;
+        backArrayData.push(dic);
+      }
+
+      response.send(JSON.stringify({ data: backArrayData }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   /*acquireOldPostsByLocation()
   request{
@@ -56,7 +202,8 @@ class PostController {
 
     //3) Add distance attributes for each post //FIXME: format of lat,lon in db
     post.map(post => {
-      if (post.location != null) { //FIXME: If the location is not empty
+      if (post.location != null) {
+        //FIXME: If the location is not empty
         let distance = GetDistance(
           post.lon,
           post.lat,
@@ -64,8 +211,8 @@ class PostController {
           request.input("lat")
         );
         post.distance = distance;
-      }else{
-        post.distance = 50000 // If location is empty, xl distance
+      } else {
+        post.distance = 50000; // If location is empty, xl distance
       }
     });
 
@@ -145,7 +292,8 @@ class PostController {
 
     //3) Add distance attributes for each post //FIXME: format of lat,lon in db
     post.map(post => {
-      if (post.location != null) { //FIXME: If the location is not empty
+      if (post.location != null) {
+        //FIXME: If the location is not empty
         let distance = GetDistance(
           post.lon,
           post.lat,
@@ -153,8 +301,8 @@ class PostController {
           request.input("lat")
         );
         post.distance = distance;
-      }else{
-        post.distance = 50000 // If location is empty, xl distance
+      } else {
+        post.distance = 50000; // If location is empty, xl distance
       }
     });
 
