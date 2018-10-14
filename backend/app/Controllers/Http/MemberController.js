@@ -96,21 +96,27 @@ class MemberController {
     }
 
     //Find lastFollowEventID and lastLikeEventID
-    let lastLikeID = 999
-    let lastFollowID = 999
+    let lastLikeID = 999;
+    let lastFollowID = 999;
     activityArray.map(activity => {
-      if(activity.event === 'like'){
-        if(activity.id < lastLikeID){
-          lastLikeID = activity.id
+      if (activity.event === "like") {
+        if (activity.id < lastLikeID) {
+          lastLikeID = activity.id;
         }
-      }else{
-        if(activity.id < lastFollowID){
-          lastFollowID = activity.id
+      } else {
+        if (activity.id < lastFollowID) {
+          lastFollowID = activity.id;
         }
       }
-    })
+    });
     //Format response
-    response.send(JSON.stringify({lastLikeID:lastLikeID,lastFollowID:lastFollowID,activities: activityArray}))
+    response.send(
+      JSON.stringify({
+        lastLikeID: lastLikeID,
+        lastFollowID: lastFollowID,
+        activities: activityArray
+      })
+    );
   }
 
   /*
@@ -161,7 +167,57 @@ class MemberController {
     }
   }
 
-  /*
+  //AcquirePortrait -> url
+  async acquirePortrait({ params, response }) {
+    try {
+      const member = await Member.findBy("email", params.userEmail);
+      response.send(member.profilePic);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  //AcquireInfo -> PostNum, Follower, Following
+  async acquireUserInfo({ params, response }) {
+    try {
+      const member = await Member.findBy("email", params.userEmail);
+
+      const following = await Database.table("followings").where({
+        MemberID: member.id
+      });
+
+      const follower = await Database.table("followings").where({
+        FollowingMemberID: member.id
+      });
+
+      const posts = await Database.table("posts").where({
+        MemberID: member.id
+      });
+
+      response.send(
+        posts.length + "," + follower.length + "," + following.length
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  //AcquirePost -> urlArray
+  async acquireUserPosts({ params, response }) {
+    try {
+      const member = await Member.findBy("email", params.userEmail);
+      let posts = await Database.table("posts").where({
+        MemberID: member.id
+      });
+      posts = posts.reverse()
+      let postArray = []
+      posts.map(post => {
+        postArray.push(post.postPic)
+      })
+      response.send(postArray)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  /* NOT USE
   response{
     status:"Success/Fail",
     user:,

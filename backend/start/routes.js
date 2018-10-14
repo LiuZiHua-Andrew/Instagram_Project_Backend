@@ -17,17 +17,24 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
-
 // Member Table
 Route.post('/api/register','MemberController.register')
 Route.post('/api/login','MemberController.login')
 Route.put('/api/updatePortrait','MemberController.updatePortrait')
 Route.get('api/searchUser/:userName','MemberController.searchUser')
-Route.get('api/acquireSelfProfile/:userEmail','MemberController.acquireSelfProfile')
+Route.get('api/suggestedUser/:userName','MemberController.suggestedUser') //TODO: Suggested user
+
+
+//Route.get('api/acquireSelfProfile/:userEmail','MemberController.acquireSelfProfile')
+Route.get('api/acquirePortrait/:userEmail','MemberController.acquirePortrait')
+Route.get('api/acquireUserInfo/:userEmail','MemberController.acquireUserInfo')
+Route.get('api/acquireUserPosts/:userEmail','MemberController.acquireUserPosts')
+
 Route.get('api/acquireOthersProfile/:userEmail/:othersEmail','MemberController.acquireOthersProfile')
 
 //Post Table
 Route.post('/api/postIns','PostController.postIns')
+Route.get('api/acquirePost/:postID','PostController.acquirePost')
 Route.get('/api/acquireLatestPostsByTime/:userEmail','PostController.acquireLatestPostsByTime')
 Route.get('/api/acquireOldPostsByTime/:userEmail/:postID','PostController.acquireOldPostsByTime')
 Route.post('/api/acquireLatestPostsByLocation','PostController.acquireLatestPostsByLocation')
@@ -49,5 +56,5 @@ Route.delete('api/follow','FollowingController.unfollow')
 //Activity Feed
 Route.get('api/acquireLatestFollowing/:userEmail','PostController.acquireLatestFollowing')
 Route.get('api/acquireOldFollowing/:userEmail/:postID','PostController.acquireOldFollowing')
-Route.get('api/acquireLatestActionFromFollower/:userEmail','MemberController.acquireLatestActionFromFollower') //TODO:
-Route.get('api/acquireOldActionFromFollower/:userEmail/:lastLikeID/:lastFollowID','MemberController.acquireOldActionFromFollower') //TODO:
+Route.get('api/acquireLatestActionFromFollower/:userEmail','MemberController.acquireLatestActionFromFollower')
+Route.get('api/acquireOldActionFromFollower/:userEmail/:lastLikeID/:lastFollowID','MemberController.acquireOldActionFromFollower')

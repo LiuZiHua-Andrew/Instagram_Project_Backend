@@ -28,6 +28,43 @@ function GetDistance(lat1, lng1, lat2, lng2) {
 }
 
 class PostController {
+  async acquirePost({ params, response }) {
+    try {
+      const post = await Post.find(params.postID);
+      const member = await Member.find(post.MemberID);
+      post.userName = member.userName;
+      const like = await Database.from("likes").where({ PostID: post.id });
+      let isLike = false;
+      like.map(like => {
+        if (like.MemberID === member.id) {
+          isLike = true;
+        }
+      });
+      post.isLike = isLike;
+      post.likes = like.length;
+
+      const comment = await Database.from("comments").where({
+        PostID: post.id
+      });
+      if (comment.length > 0) {
+        post.comment = comment[0].comment;
+
+        const commentMember = await Member.findBy("id", comment[0].MemberID);
+        post.commentUser = commentMember.userName;
+      } else {
+        post.comment = null;
+        post.commentUser = null;
+      }
+
+      let date = new Date();
+      let created_at = new Date(post.created_at);
+      post.timeToNow = Math.ceil((date - created_at) / (1000 * 3600));
+
+      response.send(post);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async acquireLatestFollowing({ params, response }) {
     try {
       const member = await Member.findBy("email", params.userEmail);
@@ -63,6 +100,14 @@ class PostController {
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
 
+        let isLike = false;
+        like.map(like => {
+          if (like.MemberID === member.id) {
+            isLike = true;
+          }
+        });
+        post.isLike = isLike;
+
         const comment = await Database.from("comments").where({
           PostID: post.id
         });
@@ -90,6 +135,7 @@ class PostController {
         dic.portrait = post.userPortrait;
         dic.photo = post.postPic;
         dic.likes = post.likes;
+        dic.isLike = post.isLike;
         dic.commentContent = post.comment;
         dic.commentUser = post.commentUser;
         dic.date = post.timeToNow;
@@ -136,6 +182,14 @@ class PostController {
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
 
+        let isLike = false;
+        like.map(like => {
+          if (like.MemberID === member.id) {
+            isLike = true;
+          }
+        });
+        post.isLike = isLike;
+
         const comment = await Database.from("comments").where({
           PostID: post.id
         });
@@ -163,6 +217,7 @@ class PostController {
         dic.portrait = post.userPortrait;
         dic.photo = post.postPic;
         dic.likes = post.likes;
+        dic.isLike = post.isLike;
         dic.commentContent = post.comment;
         dic.commentUser = post.commentUser;
         dic.date = post.timeToNow;
@@ -247,6 +302,49 @@ class PostController {
     posts = posts.filter(postFilter);
 
     //6) Format response data
+    for (let index in posts) {
+      let post = posts[index];
+      const member = await Member.findBy("id", post.MemberID);
+      post.userPortrait = member.profilePic;
+      post.userName = member.userName;
+
+      const like = await Database.from("likes").where({ PostID: post.id });
+      post.likes = like.length;
+
+      let isLike = false;
+      like.map(like => {
+        if (like.MemberID === member.id) {
+          isLike = true;
+        }
+      });
+      post.isLike = isLike;
+
+      let isLike = false;
+      like.map(like => {
+        if (like.MemberID === member.id) {
+          isLike = true;
+        }
+      });
+      post.isLike = isLike;
+
+      const comment = await Database.from("comments").where({
+        PostID: post.id
+      });
+      if (comment.length > 0) {
+        post.comment = comment[0].comment;
+
+        const commentMember = await Member.findBy("id", comment[0].MemberID);
+        post.commentUser = commentMember.userName;
+      } else {
+        post.comment = null;
+        post.commentUser = null;
+      }
+
+      let date = new Date();
+      let created_at = new Date(post.created_at);
+      post.timeToNow = Math.ceil((date - created_at) / (1000 * 3600));
+    }
+
     let backArrayData = [];
     for (let index in posts) {
       let post = posts[index];
@@ -257,6 +355,7 @@ class PostController {
       dic.portrait = post.userPortrait;
       dic.photo = post.postPic;
       dic.likes = post.likes;
+      dic.isLike = post.isLike;
       dic.commentContent = post.comment;
       dic.commentUser = post.commentUser;
       dic.date = post.timeToNow;
@@ -324,6 +423,14 @@ class PostController {
       const like = await Database.from("likes").where({ PostID: post.id });
       post.likes = like.length;
 
+      let isLike = false;
+      like.map(like => {
+        if (like.MemberID === member.id) {
+          isLike = true;
+        }
+      });
+      post.isLike = isLike;
+
       const comment = await Database.from("comments").where({
         PostID: post.id
       });
@@ -349,6 +456,7 @@ class PostController {
       dic.portrait = post.userPortrait;
       dic.photo = post.postPic;
       dic.likes = post.likes;
+      dic.isLike = post.isLike;
       dic.commentContent = post.comment;
       dic.commentUser = post.commentUser;
       dic.date = post.timeToNow;
@@ -390,6 +498,14 @@ class PostController {
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
 
+        let isLike = false;
+        like.map(like => {
+          if (like.MemberID === member.id) {
+            isLike = true;
+          }
+        });
+        post.isLike = isLike;
+
         const comment = await Database.from("comments").where({
           PostID: post.id
         });
@@ -417,6 +533,7 @@ class PostController {
         dic.portrait = post.userPortrait;
         dic.photo = post.postPic;
         dic.likes = post.likes;
+        dic.isLike = post.isLike;
         dic.commentContent = post.comment;
         dic.commentUser = post.commentUser;
         dic.date = post.timeToNow;
@@ -486,6 +603,14 @@ class PostController {
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
 
+        let isLike = false;
+        like.map(like => {
+          if (like.MemberID === member.id) {
+            isLike = true;
+          }
+        });
+        post.isLike = isLike;
+
         const comment = await Database.from("comments").where({
           PostID: post.id
         });
@@ -513,6 +638,7 @@ class PostController {
         dic.portrait = post.userPortrait;
         dic.photo = post.postPic;
         dic.likes = post.likes;
+        dic.isLike = post.isLike
         dic.commentContent = post.comment;
         dic.commentUser = post.commentUser;
         dic.date = post.timeToNow;
