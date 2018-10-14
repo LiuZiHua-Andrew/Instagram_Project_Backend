@@ -200,19 +200,23 @@ class MemberController {
       console.log(error);
     }
   }
-  //AcquirePost -> urlArray
+  //AcquirePost -> urlString
   async acquireUserPosts({ params, response }) {
     try {
       const member = await Member.findBy("email", params.userEmail);
       let posts = await Database.table("posts").where({
         MemberID: member.id
       });
-      posts = posts.reverse()
-      let postArray = []
+      posts = posts.reverse();
+      let postArray = "";
       posts.map(post => {
-        postArray.push(post.postPic)
-      })
-      response.send(postArray)
+        if (postArray != "") {
+          postArray = postArray + ','+ post.postPic;
+        }else{
+          postArray = post.postPic
+        }
+      });
+      response.send(postArray);
     } catch (error) {
       console.log(error);
     }
