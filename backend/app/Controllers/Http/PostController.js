@@ -655,7 +655,9 @@ class PostController {
   request{
     "postPic":{Picture Stream},
     "userEmail":'',
-    "comment":(Optional)
+    "comment":(Optional),
+    "lat":,
+    "log":
   }
   response{
     "status":"Success/Fail"
@@ -688,6 +690,8 @@ class PostController {
       const post = new Post();
       post.MemberID = member.id;
       post.postPic = filePath;
+      post.lat = request.input('lat') //FIXME: Fist upload figure, return id, then upload other
+      post.log = request.input('log')
       await post.save();
 
       //If has comment

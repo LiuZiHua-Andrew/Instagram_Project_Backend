@@ -35,7 +35,7 @@ Route.get('api/acquireOthersProfile/:userEmail/:othersEmail','MemberController.a
 //Post Table
 Route.post('/api/postIns','PostController.postIns')
 Route.get('api/acquirePost/:postID','PostController.acquirePost')
-Route.get('/api/acquireLatestPostsByTime/:userEmail','PostController.acquireLatestPostsByTime')
+Route.get('/api/acquireLatestPostsByTime/:userEmail/-1','PostController.acquireLatestPostsByTime')
 Route.get('/api/acquireOldPostsByTime/:userEmail/:postID','PostController.acquireOldPostsByTime')
 Route.post('/api/acquireLatestPostsByLocation','PostController.acquireLatestPostsByLocation')
 Route.post('/api/acquireOldPostsByLocation','PostController.acquireOldPostsByLocation')
