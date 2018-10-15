@@ -9,6 +9,8 @@ class PostSchema extends Schema {
       table.integer('MemberID').notNullable().unsigned().references('id').inTable('members');
       table.string('postPic').notNullable()
       table.string('location')
+      table.string('lat')
+      table.string('log')
       table.timestamps()
     })
   }

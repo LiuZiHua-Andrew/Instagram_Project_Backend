@@ -7,6 +7,7 @@ const Comment = use("App/Models/Comment");
 const Following = use("App/Models/Following");
 const Database = use("Database");
 const Like = use("App/Models/Like");
+const Request = require('request')
 
 /*Calculating Distance by (lat,lng)*/
 function GetDistance(lat1, lng1, lat2, lng2) {
@@ -255,10 +256,9 @@ class PostController {
       displayUserId
     );
 
-    //3) Add distance attributes for each post //FIXME: format of lat,lon in db
+    //3) Add distance attributes for each post
     post.map(post => {
       if (post.location != null) {
-        //FIXME: If the location is not empty
         let distance = GetDistance(
           post.lon,
           post.lat,
@@ -367,12 +367,12 @@ class PostController {
   /*acquireLatestPostsByLocation()
   request{
     userEmail:
-    lat:
+    location:,
+    lat:,
     lng:
   }
   */
   async acquireLatestPostsByLocation({ request, response }) {
-    //FIXME: if no location attributes
     //1) email -> userID + FollowingID
     const member = await Member.findBy("email", request.input("userEmail"));
     const following = await Database.from("followings").where({
@@ -389,10 +389,9 @@ class PostController {
       displayUserId
     );
 
-    //3) Add distance attributes for each post //FIXME: format of lat,lon in db
+    //3) Add distance attributes for each post
     post.map(post => {
       if (post.location != null) {
-        //FIXME: If the location is not empty
         let distance = GetDistance(
           post.lon,
           post.lat,
@@ -629,6 +628,9 @@ class PostController {
         post.timeToNow = Math.ceil((date - created_at) / (1000 * 3600));
       }
       let backArrayData = [];
+
+
+
       for (let index in posts) {
         let post = posts[index];
         let dic = new Object();
@@ -657,7 +659,8 @@ class PostController {
     "userEmail":'',
     "comment":(Optional),
     "lat":,
-    "log":
+    "log":,
+    "location":
   }
   response{
     "status":"Success/Fail"
@@ -666,6 +669,7 @@ class PostController {
   */
   async postIns({ request, response }) {
     try {
+      //FIXME:Different file key for different content
       const postPic = request.file("postPic", {
         types: ["image"],
         size: "15mb"
@@ -690,7 +694,8 @@ class PostController {
       const post = new Post();
       post.MemberID = member.id;
       post.postPic = filePath;
-      post.lat = request.input('lat') //FIXME: Fist upload figure, return id, then upload other
+      post.location = request.input('location')
+      post.lat = request.input('lat')
       post.log = request.input('log')
       await post.save();
 
