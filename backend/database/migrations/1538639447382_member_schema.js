@@ -9,7 +9,7 @@ class MemberSchema extends Schema {
       table.string('email').unique().notNullable()
       table.string('password').notNullable()
       table.string('userName').defaultTo('newUser')
-      table.string('profilePic') //FIXME: default figure for new user
+      table.string('profilePic').defaultTo('http://115.146.84.191/UserPortrait/defaultPortrait.png')
       table.timestamps()
     })
   }
