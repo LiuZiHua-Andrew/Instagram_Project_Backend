@@ -63,7 +63,6 @@ class LikeController {
         .where("MemberID", member.id)
         .where("PostID", post.id)
         .first();
-        console.log(isLike)
       if (isLike === undefined) {
         //Has not liked yet
         const like = new Like();

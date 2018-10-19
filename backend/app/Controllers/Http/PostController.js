@@ -7,7 +7,6 @@ const Comment = use("App/Models/Comment");
 const Following = use("App/Models/Following");
 const Database = use("Database");
 const Like = use("App/Models/Like");
-const Request = require('request')
 
 /*Calculating Distance by (lat,lng)*/
 function GetDistance(lat1, lng1, lat2, lng2) {
