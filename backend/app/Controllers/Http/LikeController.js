@@ -64,7 +64,7 @@ class LikeController {
         .where("PostID", post.id)
         .first();
         console.log(isLike)
-      if (isLike.length === 0) {
+      if (isLike.length === undefined) {
         //Has not liked yet
         const like = new Like();
         like.MemberID = member.id;
