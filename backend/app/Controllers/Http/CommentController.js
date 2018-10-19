@@ -36,7 +36,7 @@ class CommentController {
     reason: (When status is Fail)
   }
   */
-  async postComment() {
+  async postComment({request,response}) {
     try {
       const member = await Member.findBy("email", request.input("userEmail"));
 
