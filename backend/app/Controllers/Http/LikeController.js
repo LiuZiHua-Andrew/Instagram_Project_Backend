@@ -58,13 +58,25 @@ class LikeController {
   async like({ request, response }) {
     try {
       const member = await Member.findBy("email", request.input("userEmail"));
-      const post = await Post.find(request.input("postID"))
+      const post = await Post.find(request.input("postID"));
+      const isLike = await Database.table("likes")
+        .where("MemberID", member.id)
+        .where("PostID", post.id)
+        .first();
 
-      const like = new Like();
-      like.MemberID = member.id;
-      like.PostID = request.input("postID");
-      like.postFromID = post.MemberID;
-      await like.save();
+      if (isLike.length === 0) {
+        //Has not liked yet
+        const like = new Like();
+        like.MemberID = member.id;
+        like.PostID = request.input("postID");
+        like.postFromID = post.MemberID;
+        await like.save();
+      } else {
+        await Database.table("likes")
+          .where("MemberID", member.id)
+          .where("PostID", post.id)
+          .delete()
+      }
 
       return response.json({
         status: "Success"
