@@ -63,7 +63,7 @@ class LikeController {
         .where("MemberID", member.id)
         .where("PostID", post.id)
         .first();
-
+        console.log(isLike)
       if (isLike.length === 0) {
         //Has not liked yet
         const like = new Like();
@@ -75,7 +75,7 @@ class LikeController {
         await Database.table("likes")
           .where("MemberID", member.id)
           .where("PostID", post.id)
-          .delete()
+          .delete();
       }
 
       return response.json({
