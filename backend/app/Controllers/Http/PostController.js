@@ -50,7 +50,7 @@ class PostController {
         post.comment = comment[0].comment;
 
         const commentMember = await Member.findBy("id", comment[0].MemberID);
-        post.commentUser = commentMember.userName;
+        post.commentUser = commentMember.email;
       } else {
         post.comment = null;
         post.commentUser = null;
@@ -115,7 +115,7 @@ class PostController {
           post.comment = comment[0].comment;
 
           const commentMember = await Member.findBy("id", comment[0].MemberID);
-          post.commentUser = commentMember.userName;
+          post.commentUser = commentMember.email;
         } else {
           post.comment = null;
           post.commentUser = null;
@@ -197,7 +197,7 @@ class PostController {
           post.comment = comment[0].comment;
 
           const commentMember = await Member.findBy("id", comment[0].MemberID);
-          post.commentUser = commentMember.userName;
+          post.commentUser = commentMember.email;
         } else {
           post.comment = null;
           post.commentUser = null;
@@ -333,7 +333,7 @@ class PostController {
         post.comment = comment[0].comment;
 
         const commentMember = await Member.findBy("id", comment[0].MemberID);
-        post.commentUser = commentMember.userName;
+        post.commentUser = commentMember.email;
       } else {
         post.comment = null;
         post.commentUser = null;
@@ -436,7 +436,7 @@ class PostController {
         post.comment = comment[0].comment;
 
         const commentMember = await Member.findBy("id", comment[0].MemberID);
-        post.commentUser = commentMember.userName;
+        post.commentUser = commentMember.email;
       } else {
         post.comment = null;
         post.commentUser = null;
@@ -511,7 +511,7 @@ class PostController {
           post.comment = comment[0].comment;
 
           const commentMember = await Member.findBy("id", comment[0].MemberID);
-          post.commentUser = commentMember.userName;
+          post.commentUser = commentMember.email;
         } else {
           post.comment = null;
           post.commentUser = null;
@@ -616,7 +616,7 @@ class PostController {
           post.comment = comment[0].comment;
 
           const commentMember = await Member.findBy("id", comment[0].MemberID);
-          post.commentUser = commentMember.userName;
+          post.commentUser = commentMember.email;
         } else {
           post.comment = null;
           post.commentUser = null;
