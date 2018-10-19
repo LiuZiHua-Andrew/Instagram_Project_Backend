@@ -32,7 +32,7 @@ class PostController {
     try {
       const post = await Post.find(params.postID);
       const member = await Member.find(post.MemberID);
-      post.userName = member.userName;
+      post.userName = member.email;
       const like = await Database.from("likes").where({ PostID: post.id });
       let isLike = false;
       like.map(like => {
@@ -95,7 +95,7 @@ class PostController {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
         post.userPortrait = member.profilePic;
-        post.userName = member.userName;
+        post.userName = member.email;
 
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
@@ -177,7 +177,7 @@ class PostController {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
         post.userPortrait = member.profilePic;
-        post.userName = member.userName;
+        post.userName = member.email;
 
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
@@ -305,7 +305,7 @@ class PostController {
       let post = posts[index];
       const member = await Member.findBy("id", post.MemberID);
       post.userPortrait = member.profilePic;
-      post.userName = member.userName;
+      post.userName = member.email;
 
       const like = await Database.from("likes").where({ PostID: post.id });
       post.likes = like.length;
@@ -416,7 +416,7 @@ class PostController {
       let post = posts[index];
       const member = await Member.findBy("id", post.MemberID);
       post.userPortrait = member.profilePic;
-      post.userName = member.userName;
+      post.userName = member.email;
 
       const like = await Database.from("likes").where({ PostID: post.id });
       post.likes = like.length;
@@ -491,7 +491,7 @@ class PostController {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
         post.userPortrait = member.profilePic;
-        post.userName = member.userName;
+        post.userName = member.email;
 
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
@@ -596,7 +596,7 @@ class PostController {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
         post.userPortrait = member.profilePic;
-        post.userName = member.userName;
+        post.userName = member.email;
 
         const like = await Database.from("likes").where({ PostID: post.id });
         post.likes = like.length;
