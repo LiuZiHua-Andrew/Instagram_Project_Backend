@@ -80,7 +80,7 @@ Route.get(
   "PostController.acquireOldFollowing"
 );
 Route.get(
-  "api/acquireLatestActionFromFollower/:userEmail",
+  "api/acquireLatestActionFromFollower/:userEmail/-1/-1",
   "MemberController.acquireLatestActionFromFollower"
 );
 Route.get(
