@@ -12,13 +12,18 @@ class CommentController {
       const comments = await Database.from("comments").where({
         'PostID': params.postID
       });
-
+      let data = []
       for(let index in comments){
+        let commentContent = new Object();
         let comment = comments[index]
         let member = await Member.find(comment.MemberID)
         comment.userEmail = member.email
+
+        commentContent.comment = comment.comment
+        commentContent.commentUser = comment.userEmail
+        data.push(commentContent)
       }
-      return response.json(comments);
+      return response.json({data:data});
 
     } catch (error) {
       console.log(error);
