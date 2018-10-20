@@ -170,7 +170,7 @@ class MemberController {
         } else {
           const member = await Member.find(activity.MemberID);
           activity.memberPortrait = member.profilePic;
-          activity.mePortrait = "http://115.146.84.191/UserPost/test2.jpg";
+          activity.postPic = "http://115.146.84.191/UserPost/test2.jpg";
         }
       }
 
@@ -241,7 +241,7 @@ class MemberController {
       } else {
         const member = await Member.find(activity.MemberID);
         activity.memberPortrait = member.profilePic;
-        activity.mePortrait = "http://115.146.84.191/UserPost/test2.jpg";
+        activity.postPic = "http://115.146.84.191/UserPost/test2.jpg";
       }
     }
 
