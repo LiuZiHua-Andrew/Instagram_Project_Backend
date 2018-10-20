@@ -3,6 +3,7 @@ const Encryption = use("Encryption");
 const Member = use("App/Models/Member");
 const imagePath = "UserPortrait";
 const Database = use("Database");
+const Post = use("App/Models/Post");
 
 class MemberController {
   async acquireLatestActionFromFollower({ params, response }) {
@@ -39,10 +40,28 @@ class MemberController {
       for (let index in activityArray) {
         let activity = activityArray[index];
         let userEmail = await Member.find(activity.MemberID);
-        activity.userEmail = userEmail.userName;
+        activity.userEmail = userEmail.email;
+
+        //Adding Time to now
+        let date = new Date();
+        let created_at = new Date(activity.created_at);
+        activity.timeToNow = Math.ceil((date - created_at) / (1000 * 3600));
+
+        //Adding Figures
+        if (activity.event === "like") {
+          const member = await Member.find(activity.MemberID);
+          activity.memberPortrait = member.profilePic;
+          const post = await Post.find(activity.PostID);
+          activity.postPic = post.postPic;
+        } else {
+          const member = await Member.find(activity.MemberID);
+          activity.memberPortrait = member.profilePic;
+          activity.mePortrait = "http://115.146.84.191/UserPost/test2.jpg";
+        }
       }
+
       //Format response
-      response.json({ activityArray });
+      response.json({ data: activityArray });
     } catch (error) {
       console.log(error);
     }
@@ -91,8 +110,25 @@ class MemberController {
     for (let index in activityArray) {
       let activity = activityArray[index];
       let userEmail = await Member.find(activity.MemberID);
-      console.log(userEmail.userName);
+      // console.log(userEmail.userName);
       activity.userEmail = userEmail.userName;
+
+      //Adding Time to now
+      let date = new Date();
+      let created_at = new Date(activity.created_at);
+      activity.timeToNow = Math.ceil((date - created_at) / (1000 * 3600));
+
+      //Adding Figures
+      if (activity.event === "like") {
+        const member = await Member.find(activity.MemberID);
+        activity.memberPortrait = member.profilePic;
+        const post = await Post.find(activity.PostID);
+        activity.postPic = post.postPic;
+      } else {
+        const member = await Member.find(activity.MemberID);
+        activity.memberPortrait = member.profilePic;
+        activity.mePortrait = "http://115.146.84.191/UserPost/test2.jpg";
+      }
     }
 
     //Find lastFollowEventID and lastLikeEventID
@@ -211,9 +247,9 @@ class MemberController {
       let postArray = "";
       posts.map(post => {
         if (postArray != "") {
-          postArray = postArray + ','+ post.postPic;
-        }else{
-          postArray = post.postPic
+          postArray = postArray + "," + post.postPic;
+        } else {
+          postArray = post.postPic;
         }
       });
       response.send(postArray);
