@@ -667,16 +667,16 @@ class PostController {
   */
   async postIns({ request, response }) {
     try {
-      console.log('In')
-      console.log(request.input('comment'))
-      base64Image
-        .img(request.input("postPic"), "../../../public/UserPost", "base64Test",function(err,filepath){
-          console.log(err)
-          console.log(filepath)
-        })
-      base64ToImage(request.input('postPic'),'../../../public/UserPost',{'fileName':'base64Test2','type':'png'})
-      console.log('second')
-        return 'success'
+      // console.log('In')
+      // console.log(request.input('comment'))
+      // base64Image
+      //   .img(request.input("postPic"), "../../../public/UserPost", "base64Test",function(err,filepath){
+      //     console.log(err)
+      //     console.log(filepath)
+      //   })
+      // base64ToImage(request.input('postPic'),'../../../public/UserPost',{'fileName':'base64Test2','type':'png'})
+      // console.log('second')
+      //   return 'success'
       //FIXME:Different file key for different content
       const postPic = request.file("postPic", {
         types: ["image"],
