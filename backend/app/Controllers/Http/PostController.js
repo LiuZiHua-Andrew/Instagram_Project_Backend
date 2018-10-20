@@ -666,8 +666,10 @@ class PostController {
     "reason":(Only when status is Fail)
   }
   */
-  async postIns({ request, response }) {
+  async postIns({request, response}) {
     try {
+      console.log(request.all())
+
       //FIXME:Different file key for different content
       const postPic = request.file("postPic", {
         types: ["image"],
