@@ -16,7 +16,7 @@ class CommentController {
       for(let index in comments){
         let comment = comments[index]
         let member = await Member.find(comment.MemberID)
-        comment.userName = member.email
+        comment.userEmail = member.email
       }
       return response.json(comments);
 

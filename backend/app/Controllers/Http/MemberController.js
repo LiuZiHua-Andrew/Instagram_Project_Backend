@@ -6,6 +6,120 @@ const Database = use("Database");
 const Post = use("App/Models/Post");
 
 class MemberController {
+  async suggestedUser({ params, response }) {
+    const member = await Member.findBy("email", params.userEmail);
+    const followings = await Database.from("followings").where({
+      MemberID: member.id
+    });
+
+    //Acquire recommended user's followers
+    let memberFollowing = [];
+    followings.map(following => {
+      memberFollowing.push(following.FollowingMemberID);
+    });
+    const followMe = [];
+    const followMeFollower = await Database.from("followings").where({
+      FollowingMemberID: member.id
+    });
+    followMeFollower.map(following => {
+      followMe.push(following.MemberID);
+    });
+    let aSet = new Set(memberFollowing);
+    let bSet = new Set(followMe);
+    memberFollowing = Array.from(new Set(followMe.filter(v => aSet.has(v))));
+
+    //Acquire others user's
+    const users = await Database.from("members").whereNot("id", member.id);
+    // console.log(users)
+    let usersArray = [];
+    //Acquire others user's followers
+
+    for (let index in users) {
+      let user = users[index];
+      let temObj = new Object();
+      //I follow who
+      let followers = await Database.from("followings").where({
+        MemberID: user.id
+      });
+      let followerArray = [];
+      followers.map(follower => {
+        followerArray.push(follower.FollowingMemberID);
+      });
+
+      //who follow me
+      const followMe = [];
+      const followMeFollower = await Database.from("followings").where({
+        FollowingMemberID: user.id
+      });
+      followMeFollower.map(following => {
+        followMe.push(following.MemberID);
+      });
+      let aSet = new Set(followerArray);
+      let bSet = new Set(followMe);
+      followerArray = Array.from(new Set(followMe.filter(v => aSet.has(v))));
+
+      temObj.userID = user.id;
+      temObj.followers = followerArray;
+      usersArray.push(temObj);
+    }
+
+    //Exclude existed follower
+    let excludedArray = [];
+    usersArray.map(user => {
+      let isIn = false;
+      memberFollowing.map(id => {
+        if (user.userID === id) {
+          isIn = true;
+        }
+      });
+      if (!isIn) {
+        excludedArray.push(user);
+      }
+    });
+    usersArray = excludedArray;
+
+    /*usersArray, memberFollowing */
+    //Assign recommend value
+    let recommendArray = [];
+    usersArray.map(user => {
+      let unionSet = Array.from(
+        new Set(user.followers.concat(memberFollowing))
+      );
+      let recommendUser = new Object();
+      recommendUser.userID = user.userID;
+      if (unionSet.length === 0) {
+        recommendUser.coe = 0;
+      } else {
+        let aSet = new Set(memberFollowing);
+        let bSet = new Set(user.followers);
+
+        let intersection = Array.from(
+          new Set(memberFollowing.filter(v => bSet.has(v)))
+        );
+        recommendUser.coe = intersection.length / parseFloat(unionSet.length);
+      }
+      recommendArray.push(recommendUser);
+    });
+    recommendArray.sort(function(a, b) {
+      var keyA = new Date(a.coe),
+        keyB = new Date(b.coe);
+      if (keyA < keyB) return 1;
+      if (keyA > keyB) return -1;
+      return 0;
+    });
+
+    //Format response data
+    let responseData = [];
+    for (let index in recommendArray) {
+      let recommend = recommendArray[index];
+      let temObj = new Object();
+      const member = await Member.find(recommend.userID);
+      temObj.userEmail = member.email;
+      temObj.profilePic = member.profilePic;
+      responseData.push(temObj);
+    }
+    response.json({ data: responseData });
+  }
   async acquireLatestActionFromFollower({ params, response }) {
     try {
       //email -> likes -> truncate into 10 -> adding event attribute
@@ -305,13 +419,31 @@ class MemberController {
   */
   async searchUser({ params, response }) {
     try {
+      if(params.userEmail === params.searchedUser){
+        return response.send('You are searching yourself')
+      }
+
       const user = await Database.table("members").where({
-        userName: params.userName
+        email: params.searchedUser
       });
-      response.json({
-        status: "Success",
-        user: user
-      });
+      if (user != undefined) {
+        //has user
+        const isFollow = await Database.table("followings")
+          .where({ MemberID: params.userEmail })
+          .where({ FollowingMemberID: params.searchedUser });
+
+        let obj = new Object();
+        obj.isFollow = false
+        if (isFollow != undefined) {
+          obj.isFollow = true;
+        }
+
+        obj.email = user[0].email;
+        obj.profilePic = user[0].profilePic;
+        return response.send(obj);
+      } else {
+        return response.send("No User was Found");
+      }
     } catch (error) {
       console.log(error);
       return response.json({

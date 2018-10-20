@@ -21,8 +21,8 @@ Route.on("/").render("welcome");
 Route.post("/api/register", "MemberController.register");
 Route.post("/api/login", "MemberController.login");
 Route.put("/api/updatePortrait", "MemberController.updatePortrait");
-Route.get("api/searchUser/:userName", "MemberController.searchUser");
-Route.get("api/suggestedUser/:userName", "MemberController.suggestedUser"); //TODO: Suggested user
+Route.get("api/searchUser/:userEmail/:searchedUser", "MemberController.searchUser");
+Route.get("api/suggestedUser/:userEmail", "MemberController.suggestedUser");
 
 //Route.get('api/acquireSelfProfile/:userEmail','MemberController.acquireSelfProfile')
 Route.get("api/acquirePortrait/:userEmail", "MemberController.acquirePortrait");
