@@ -55,7 +55,7 @@ Route.post('api/follow','FollowingController.follow')
 Route.delete('api/follow','FollowingController.unfollow')
 
 //Activity Feed
-Route.get('api/acquireLatestFollowing/:userEmail','PostController.acquireLatestFollowing')
+Route.get('api/acquireLatestFollowing/:userEmail/-1','PostController.acquireLatestFollowing')
 Route.get('api/acquireOldFollowing/:userEmail/:postID','PostController.acquireOldFollowing')
 Route.get('api/acquireLatestActionFromFollower/:userEmail','MemberController.acquireLatestActionFromFollower')
 Route.get('api/acquireOldActionFromFollower/:userEmail/:lastLikeID/:lastFollowID','MemberController.acquireOldActionFromFollower')
