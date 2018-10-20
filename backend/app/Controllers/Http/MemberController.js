@@ -55,7 +55,7 @@ class MemberController {
     userEmail:
   }
   */
-  async acquireOldActionFromFollower({ params, request, response }) {
+  async acquireOldActionFromFollower({ params, response }) {
     //email -> like -> truncate into 10 -> adding event attribute
     const member = await Member.findBy("email", params.userEmail);
     const likes = await Database.from("likes")

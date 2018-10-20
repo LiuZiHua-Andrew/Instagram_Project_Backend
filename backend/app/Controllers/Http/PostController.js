@@ -97,6 +97,7 @@ class PostController {
       for (let index in posts) {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
+        const requestMember = await Member.findBy("email", params.userEmail);
         post.userPortrait = member.profilePic;
         post.userName = member.email;
 
@@ -105,7 +106,7 @@ class PostController {
 
         let isLike = false;
         like.map(like => {
-          if (like.MemberID === member.id) {
+          if (like.MemberID === requestMember.id) {
             isLike = true;
           }
         });
@@ -179,6 +180,7 @@ class PostController {
       for (let index in posts) {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
+        const requestMember = await Member.findBy("id",prams.userEmail)
         post.userPortrait = member.profilePic;
         post.userName = member.email;
 
@@ -187,7 +189,7 @@ class PostController {
 
         let isLike = false;
         like.map(like => {
-          if (like.MemberID === member.id) {
+          if (like.MemberID === requestMember.id) {
             isLike = true;
           }
         });
@@ -307,6 +309,7 @@ class PostController {
     for (let index in posts) {
       let post = posts[index];
       const member = await Member.findBy("id", post.MemberID);
+      const requestMember = await Member.findBy("id", params.userEmail);
       post.userPortrait = member.profilePic;
       post.userName = member.email;
 
@@ -315,15 +318,7 @@ class PostController {
 
       let isLike = false;
       like.map(like => {
-        if (like.MemberID === member.id) {
-          isLike = true;
-        }
-      });
-      post.isLike = isLike;
-
-      let isLike = false;
-      like.map(like => {
-        if (like.MemberID === member.id) {
+        if (like.MemberID === requestMember.id) {
           isLike = true;
         }
       });
@@ -418,6 +413,7 @@ class PostController {
     for (let index in posts) {
       let post = posts[index];
       const member = await Member.findBy("id", post.MemberID);
+      const requestMember = await Member.findBy("id", params.userEmail);
       post.userPortrait = member.profilePic;
       post.userName = member.email;
 
@@ -426,7 +422,7 @@ class PostController {
 
       let isLike = false;
       like.map(like => {
-        if (like.MemberID === member.id) {
+        if (like.MemberID === requestMember.id) {
           isLike = true;
         }
       });
@@ -493,6 +489,7 @@ class PostController {
       for (let index in posts) {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
+        const requestMember = await Member.findBy("id", params.userEmail);
         post.userPortrait = member.profilePic;
         post.userName = member.email;
 
@@ -501,7 +498,7 @@ class PostController {
 
         let isLike = false;
         like.map(like => {
-          if (like.MemberID === member.id) {
+          if (like.MemberID === requestMember.id) {
             isLike = true;
           }
         });
@@ -598,6 +595,7 @@ class PostController {
       for (let index in posts) {
         let post = posts[index];
         const member = await Member.findBy("id", post.MemberID);
+        const requestMember = await Member.findBy("email", params.userEmail);
         post.userPortrait = member.profilePic;
         post.userName = member.email;
 
@@ -606,7 +604,7 @@ class PostController {
 
         let isLike = false;
         like.map(like => {
-          if (like.MemberID === member.id) {
+          if (like.MemberID === requestMember.id) {
             isLike = true;
           }
         });
