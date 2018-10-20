@@ -419,8 +419,15 @@ class MemberController {
   */
   async searchUser({ params, response }) {
     try {
+      let data = []
       if(params.userEmail === params.searchedUser){
-        return response.send('You are searching yourself')
+        let obj = new Object();
+        obj.email = params.userEmail;
+        const user = await Database.table("members").where({'email':params.userEmail})
+        obj.profilePic=user[0].profilePic
+        obj.isFollow = false
+        data.push(obj)
+        return response.json({data:data})
       }
 
       const user = await Database.table("members").where({
@@ -440,16 +447,15 @@ class MemberController {
 
         obj.email = user[0].email;
         obj.profilePic = user[0].profilePic;
-        return response.send(obj);
+        data.push(obj)
+        return response.json({data:data});
       } else {
-        return response.send("No User was Found");
+        return response.json({data:data})
       }
     } catch (error) {
       console.log(error);
-      return response.json({
-        status: "Fail",
-        reason: "Server Error"
-      });
+      let data = []
+      return response.json({data:data})
     }
   }
 
