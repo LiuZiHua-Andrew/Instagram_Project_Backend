@@ -8,7 +8,8 @@ const Following = use("App/Models/Following");
 const Database = use("Database");
 const Like = use("App/Models/Like");
 const NodeGeocoder = use("node-geocoder");
-const base64ToImage = use("base64-img");
+const base64ToImage = use("base64-to-image")
+const base64Image =use("base64-img");
 
 /*Calculating Distance by (lat,lng)*/
 function GetDistance(lat1, lng1, lat2, lng2) {
@@ -666,14 +667,16 @@ class PostController {
   */
   async postIns({ request, response }) {
     try {
-      base64ToImage
-        .img(request.input("postPic"), "../../../public/UserPost", "base64Test")
-        .then(function(filePath) {
-          console.log(filePath)
-        }).catch(function(err){
-          console.log(err)
-        });
-      return 'success'
+      base64Image
+        .img(request.input("postPic"), "../../../public/UserPost", "base64Test",function(err,filepath){
+          if(err){
+            console.log(err)
+          }
+          console.log(filepath)
+        })
+        let img = base64ToImage(request.input('postPic'),'../../../public/UserPost',{'fileName':'base64Test2','type':'png'})
+        console.log('second')
+        return 'success'
       //FIXME:Different file key for different content
       const postPic = request.file("postPic", {
         types: ["image"],
