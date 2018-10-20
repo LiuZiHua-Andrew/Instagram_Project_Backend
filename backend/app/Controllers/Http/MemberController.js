@@ -438,10 +438,9 @@ class MemberController {
         const isFollow = await Database.table("followings")
           .where({ MemberID: params.userEmail })
           .where({ FollowingMemberID: params.searchedUser });
-
         let obj = new Object();
         obj.isFollow = false
-        if (isFollow != undefined) {
+        if (isFollow.length > 0) {
           obj.isFollow = true;
         }
 
