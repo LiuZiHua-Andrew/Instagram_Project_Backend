@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 /*
 |--------------------------------------------------------------------------
@@ -14,48 +14,98 @@
 */
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager'} */
-const Route = use('Route')
+const Route = use("Route");
 
-Route.on('/').render('welcome')
+Route.on("/").render("welcome");
 // Member Table
-Route.post('/api/register','MemberController.register')
-Route.post('/api/login','MemberController.login')
-Route.put('/api/updatePortrait','MemberController.updatePortrait')
-Route.get('api/searchUser/:userName','MemberController.searchUser')
-Route.get('api/suggestedUser/:userName','MemberController.suggestedUser') //TODO: Suggested user
-
+Route.post("/api/register", "MemberController.register");
+Route.post("/api/login", "MemberController.login");
+Route.put("/api/updatePortrait", "MemberController.updatePortrait");
+Route.get("api/searchUser/:userName", "MemberController.searchUser");
+Route.get("api/suggestedUser/:userName", "MemberController.suggestedUser"); //TODO: Suggested user
 
 //Route.get('api/acquireSelfProfile/:userEmail','MemberController.acquireSelfProfile')
-Route.get('api/acquirePortrait/:userEmail','MemberController.acquirePortrait')
-Route.get('api/acquireUserInfo/:userEmail','MemberController.acquireUserInfo')
-Route.get('api/acquireUserPosts/:userEmail','MemberController.acquireUserPosts')
+Route.get("api/acquirePortrait/:userEmail", "MemberController.acquirePortrait");
+Route.get("api/acquireUserInfo/:userEmail", "MemberController.acquireUserInfo");
+Route.get(
+  "api/acquireUserPosts/:userEmail",
+  "MemberController.acquireUserPosts"
+);
 
-Route.get('api/acquireOthersProfile/:userEmail/:othersEmail','MemberController.acquireOthersProfile')
+Route.get(
+  "api/acquireOthersProfile/:userEmail/:othersEmail",
+  "MemberController.acquireOthersProfile"
+);
 
 //Post Table
-Route.post('/api/postIns','PostController.postIns')
-Route.get('api/acquirePost/:postID','PostController.acquirePost')
-Route.get('/api/acquireLatestPostsByTime/:userEmail/-1','PostController.acquireLatestPostsByTime')
-Route.get('/api/acquireOldPostsByTime/:userEmail/:postID','PostController.acquireOldPostsByTime')
+Route.post("/api/postIns", "PostController.postIns");
+Route.get("api/acquirePost/:postID", "PostController.acquirePost");
+Route.get(
+  "/api/acquireLatestPostsByTime/:userEmail/-1",
+  "PostController.acquireLatestPostsByTime"
+);
+Route.get(
+  "/api/acquireOldPostsByTime/:userEmail/:postID",
+  "PostController.acquireOldPostsByTime"
+);
 
-Route.post('/api/acquireLatestPostsByLocation','PostController.acquireLatestPostsByLocation')
-Route.post('/api/acquireOldPostsByLocation','PostController.acquireOldPostsByLocation')
-
+Route.post(
+  "/api/acquireLatestPostsByLocation",
+  "PostController.acquireLatestPostsByLocation"
+);
+Route.post(
+  "/api/acquireOldPostsByLocation",
+  "PostController.acquireOldPostsByLocation"
+);
 
 //Like Table
-Route.post('api/like','LikeController.like')
-Route.get('api/whoLike/:postID','LikeController.whoLike')
+Route.post("api/like", "LikeController.like");
+Route.get("api/whoLike/:postID", "LikeController.whoLike");
 
 //Comment Table
-Route.post('api/postComment','CommentController.postComment')
-Route.get('/api/acquireComment/:postID','CommentController.acquireComment')
+Route.post("api/postComment", "CommentController.postComment");
+Route.get("/api/acquireComment/:postID", "CommentController.acquireComment");
 
 //Follow Table
-Route.post('api/follow','FollowingController.follow')
-Route.delete('api/follow','FollowingController.unfollow')
+Route.post("api/follow", "FollowingController.follow");
+Route.delete("api/follow", "FollowingController.unfollow");
 
 //Activity Feed
-Route.get('api/acquireLatestFollowing/:userEmail/-1','PostController.acquireLatestFollowing')
-Route.get('api/acquireOldFollowing/:userEmail/:postID','PostController.acquireOldFollowing')
-Route.get('api/acquireLatestActionFromFollower/:userEmail','MemberController.acquireLatestActionFromFollower')
-Route.get('api/acquireOldActionFromFollower/:userEmail/:lastLikeID/:lastFollowID','MemberController.acquireOldActionFromFollower')
+Route.get(
+  "api/acquireLatestFollowing/:userEmail/-1",
+  "PostController.acquireLatestFollowing"
+);
+Route.get(
+  "api/acquireOldFollowing/:userEmail/:postID",
+  "PostController.acquireOldFollowing"
+);
+Route.get(
+  "api/acquireLatestActionFromFollower/:userEmail",
+  "MemberController.acquireLatestActionFromFollower"
+);
+Route.get(
+  "api/acquireOldActionFromFollower/:userEmail/:lastLikeID/:lastFollowID",
+  "MemberController.acquireOldActionFromFollower"
+);
+
+//Location Test
+Route.get("api/location", async () => {
+  var NodeGeocoder = require("node-geocoder");
+
+  var options = {
+    provider: "google",
+    apiKey: "AIzaSyC0IRqt601KXqI8rMuzvkWEwwFosamtzv0"
+  };
+  var location = "";
+  var geocoder = NodeGeocoder(options);
+  location = await geocoder
+    .reverse({ lat: 45.767, lon: 4.833 })
+    .then(function(res) {
+      //Return location information
+      return res
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
+  location = location[0].formattedAddress
+});

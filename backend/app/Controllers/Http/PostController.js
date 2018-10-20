@@ -7,6 +7,7 @@ const Comment = use("App/Models/Comment");
 const Following = use("App/Models/Following");
 const Database = use("Database");
 const Like = use("App/Models/Like");
+const NodeGeocoder = use("node-geocoder");
 
 /*Calculating Distance by (lat,lng)*/
 function GetDistance(lat1, lng1, lat2, lng2) {
@@ -628,8 +629,6 @@ class PostController {
       }
       let backArrayData = [];
 
-
-
       for (let index in posts) {
         let post = posts[index];
         let dic = new Object();
@@ -639,13 +638,12 @@ class PostController {
         dic.portrait = post.userPortrait;
         dic.photo = post.postPic;
         dic.likes = post.likes;
-        dic.isLike = post.isLike
+        dic.isLike = post.isLike;
         dic.commentContent = post.comment;
         dic.commentUser = post.commentUser;
         dic.date = post.timeToNow;
         backArrayData.push(dic);
       }
-
       response.send(JSON.stringify({ data: backArrayData }));
     } catch (error) {
       console.log(error);
@@ -658,17 +656,16 @@ class PostController {
     "userEmail":'',
     "comment":(Optional),
     "lat":,
-    "log":,
-    "location":
+    "log":
   }
   response{
     "status":"Success/Fail"
     "reason":(Only when status is Fail)
   }
   */
-  async postIns({request, response}) {
+  async postIns({ request, response }) {
     try {
-      console.log(request.all())
+      console.log(request.all());
 
       //FIXME:Different file key for different content
       const postPic = request.file("postPic", {
@@ -691,13 +688,32 @@ class PostController {
       if (!postPic.moved()) {
         return postPic.error();
       }
+
+      //Resolve Location
+      var options = {
+        provider: "google",
+        apiKey: "AIzaSyC0IRqt601KXqI8rMuzvkWEwwFosamtzv0"
+      };
+      let location = "";
+      var geocoder = NodeGeocoder(options);
+      location = await geocoder
+        .reverse({ lat: request.input('lat'), lon: request.input('log') })
+        .then(function(res) {
+          //Return location information
+          return res;
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      location = location[0].formattedAddress;
+
       const member = await Member.findBy("email", request.input("userEmail"));
       const post = new Post();
       post.MemberID = member.id;
       post.postPic = filePath;
-      post.location = request.input('location')
-      post.lat = request.input('lat')
-      post.log = request.input('log')
+      post.location = location;
+      post.lat = request.input("lat");
+      post.log = request.input("log");
       await post.save();
 
       //If has comment
