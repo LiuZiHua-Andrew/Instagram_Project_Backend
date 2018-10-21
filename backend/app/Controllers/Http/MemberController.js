@@ -457,9 +457,10 @@ class MemberController {
       });
       if (user != undefined) {
         //has user
-        const isFollow = await Database.table("followings")
-          .where({ MemberID: params.userEmail })
-          .where({ FollowingMemberID: params.searchedUser });
+        const actionUser = await Member.findBy("email",params.userEmail)
+        const isFollow = await Database.from("followings")
+          .where({ MemberID: actionUser.id })
+          .where({ FollowingMemberID: user[0].id });
         let obj = new Object();
         obj.isFollow = false;
         if (isFollow.length > 0) {
