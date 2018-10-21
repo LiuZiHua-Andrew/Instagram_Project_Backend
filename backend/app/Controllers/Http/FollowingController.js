@@ -56,7 +56,7 @@ class FollowingController {
     try {
       const follow = new Following();
       const member = Member.findBy("email", request.input("userEmail"));
-      const follow = Member.findBy("email",request.input("followingID"));
+      const following = Member.findBy("email",request.input("followingID"));
       follow.MemberID = member.id;
       follow.FollowingMemberID = following.id;
       await follow.save();
