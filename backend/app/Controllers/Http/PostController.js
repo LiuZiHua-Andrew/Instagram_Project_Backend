@@ -12,10 +12,9 @@ const base64ToImage = use("base64-to-image");
 const base64Image = use("base64-img");
 
 /*Calculating Distance by (lat,lng)*/
-function Rad(Value)
-    {
-        return Value * Math.PI / 180;
-    }
+function Rad(Value) {
+  return (Value * Math.PI) / 180;
+}
 
 function GetDistance(lat1, lng1, lat2, lng2) {
   var radLat1 = Rad(lat1);
@@ -288,10 +287,7 @@ class PostController {
     });
 
     //2) ID -> Posts
-    const posts = await Database.from("posts").whereIn(
-      "MemberID",
-      displayUserId
-    );
+    let posts = await Database.from("posts").whereIn("MemberID", displayUserId);
 
     //3) Add distance attributes for each post
     posts.map(post => {
@@ -315,34 +311,51 @@ class PostController {
       return 0;
     });
     let lastIdIndex;
-    posts.map((post, index) => {
+    for (index in posts) {
+      let post = posts[index];
       if (post.postID === request.input("lastPostID")) {
         lastIdIndex = index;
       }
-    });
+    }
     posts = posts.slice(lastIdIndex + 1);
 
     //5) Filter out existed posts, sending from front-end
-    postFilter = (element, index, array) => {
-      var data = request.input("postID");
-      var isUsed = true;
-      for (index in data) {
-        let post = data[index];
-        if (post === element.postID) {
-          isUsed = false;
+    let excludedArray = [];
+    posts.map(post => {
+      let isIn = false;
+      request.input("postID").map(id => {
+        if (post.id === id) {
+          isIn = true;
         }
+      });
+      if (!isIn) {
+        excludedArray.push(user);
       }
-      if (isUsed) {
-        return element;
-      }
-    };
-    posts = posts.filter(postFilter);
+    });
+    posts = excludedArray;
+    // let postFilter = (element, index, array) => {
+    //   var data = request.input("postID");
+    //   var isUsed = true;
+    //   for (index in data) {
+    //     let post = data[index];
+    //     if (post === element.id) {
+    //       isUsed = false;
+    //     }
+    //   }
+    //   if (isUsed) {
+    //     return element;
+    //   }
+    // };
+    // posts = posts.filter(postFilter);
 
     //6) Format response data
     for (let index in posts) {
       let post = posts[index];
       const member = await Member.findBy("id", post.MemberID);
-      const requestMember = await Member.findBy("id", params.userEmail);
+      const requestMember = await Member.findBy(
+        "email",
+        request.input("userEmail")
+      );
       post.userPortrait = member.profilePic;
       post.userName = member.email;
 
@@ -430,7 +443,7 @@ class PostController {
       "MemberID",
       displayUserId
     );
-    console.log(posts)
+    console.log(posts);
     //3) Add distance attributes for each post
     posts.map(post => {
       if (post.location != null) {
@@ -458,7 +471,10 @@ class PostController {
     for (let index in posts) {
       let post = posts[index];
       const member = await Member.findBy("id", post.MemberID);
-      const requestMember = await Member.findBy("email", request.input('userEmail'));
+      const requestMember = await Member.findBy(
+        "email",
+        request.input("userEmail")
+      );
       post.userPortrait = member.profilePic;
       post.userName = member.email;
 
