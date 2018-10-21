@@ -760,6 +760,7 @@ class PostController {
         types: ["image"],
         size: "15mb"
       });
+      console.log(postPic)
       //Change File Name
       let fileName = `${new Date().getTime()}.${postPic.subtype}`;
 
