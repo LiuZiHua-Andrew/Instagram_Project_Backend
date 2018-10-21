@@ -54,7 +54,7 @@ class FollowingController {
   */
   async follow({ request, response }) {
     try {
-      let follow = new Following();
+      const follow = new Following();
       const member = Member.findBy("email", request.input("userEmail"));
       const follow = Member.findBy("email",request.input("followingID"));
       follow.MemberID = member.id;
