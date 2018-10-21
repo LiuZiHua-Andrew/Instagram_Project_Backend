@@ -450,13 +450,13 @@ class PostController {
       if (a.distance > b.distance) return 1;
       return 0;
     });
-    post.slice(0, 10);
+    posts.slice(0, 10);
 
     //5) Adding complete information for each post
     for (let index in posts) {
       let post = posts[index];
       const member = await Member.findBy("id", post.MemberID);
-      const requestMember = await Member.findBy("id", params.userEmail);
+      const requestMember = await Member.findBy("email", request.input('userEmail'));
       post.userPortrait = member.profilePic;
       post.userName = member.email;
 
