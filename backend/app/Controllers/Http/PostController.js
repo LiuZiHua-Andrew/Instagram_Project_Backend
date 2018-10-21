@@ -755,12 +755,12 @@ class PostController {
   */
   async postIns({ request, response }) {
     try {
+      console.log(request.all())
       //Different file key for different content
       const postPic = request.file("postPic", {
         types: ["image"],
         size: "15mb"
       });
-      console.log(postPic)
       //Change File Name
       let fileName = `${new Date().getTime()}.${postPic.subtype}`;
 
