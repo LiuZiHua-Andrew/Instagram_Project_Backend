@@ -21,8 +21,8 @@ class FollowingController {
   */
   async unfollow({ request, response }) {
     try {
-      const member = Member.findBy("email", request.input("userEmail"));
-      const following = Member.findBy("email", request.input("followingID"));
+      const member = await Member.findBy("email", request.input("userEmail"));
+      const following = await Member.findBy("email", request.input("followingID"));
       await Database.table("followings")
         .where("MemberID", member.id)
         .where("FollowingMemberID", following.id)
@@ -56,8 +56,8 @@ class FollowingController {
   async follow({ request, response }) {
     try {
       const follow = new Following();
-      const member = Member.findBy("email", request.input("userEmail"));
-      const following = Member.findBy("email", request.input("followingID"));
+      const member = await Member.findBy("email", request.input("userEmail"));
+      const following = await Member.findBy("email", request.input("followingID"));
       follow.MemberID = member.id;
       follow.FollowingMemberID = following.id;
       await follow.save();
