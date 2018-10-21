@@ -54,12 +54,12 @@ class FollowingController {
   */
   async follow({ request, response }) {
     try {
-      let following = new Following();
+      let follow = new Following();
       const member = Member.findBy("email", request.input("userEmail"));
-      const following = Member.findBy("email",request.input("followingID"));
-      following.MemberID = member.id;
-      following.FollowingMemberID = following.id;
-      await following.save();
+      const follow = Member.findBy("email",request.input("followingID"));
+      follow.MemberID = member.id;
+      follow.FollowingMemberID = following.id;
+      await follow.save();
 
       response.json({
         status: "Success"
