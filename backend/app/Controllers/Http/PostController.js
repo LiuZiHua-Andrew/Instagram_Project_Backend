@@ -12,6 +12,11 @@ const base64ToImage = use("base64-to-image");
 const base64Image = use("base64-img");
 
 /*Calculating Distance by (lat,lng)*/
+function Rad(Value)
+    {
+        return Value * Math.PI / 180;
+    }
+
 function GetDistance(lat1, lng1, lat2, lng2) {
   var radLat1 = Rad(lat1);
   var radLat2 = Rad(lat2);
@@ -402,10 +407,9 @@ class PostController {
 
   /*acquireLatestPostsByLocation()
   request{
-    userEmail:
-    location:,
+    userEmail:,
     lat:,
-    lng:
+    lon:
   }
   */
   async acquireLatestPostsByLocation({ request, response }) {
@@ -424,9 +428,9 @@ class PostController {
       "MemberID",
       displayUserId
     );
-
+    console.log(posts)
     //3) Add distance attributes for each post
-    post.map(post => {
+    posts.map(post => {
       if (post.location != null) {
         let distance = GetDistance(
           post.lon,
