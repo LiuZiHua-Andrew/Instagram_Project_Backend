@@ -7,14 +7,10 @@ const Database = use("Database");
  * Resourceful controller for interacting with likes
  */
 class LikeController {
-  async whoLike({ params, response }) {
-    /*comment
-  response{
-    status: "Success/Fail",
-    likes:'[]' (when status is Success)
-    reason: (When status is Fail)
-  }
+  /*
+  Description: Display people who like the post
   */
+  async whoLike({ params, response }) {
     try {
       const like = await Database.from("likes").where({
         PostID: params.postID
@@ -45,7 +41,7 @@ class LikeController {
     }
   }
 
-  /*like
+  /*
   request{
     userEmail:'',
     postID:''
@@ -54,6 +50,9 @@ class LikeController {
     status: "Success/Fail",
     reason: (When status is Fail)
   }
+
+  Description:
+    Like/UnLike a post
   */
   async like({ request, response }) {
     try {

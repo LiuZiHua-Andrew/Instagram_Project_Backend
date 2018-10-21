@@ -21,7 +21,10 @@ Route.on("/").render("welcome");
 Route.post("/api/register", "MemberController.register");
 Route.post("/api/login", "MemberController.login");
 Route.put("/api/updatePortrait", "MemberController.updatePortrait");
-Route.get("api/searchUser/:userEmail/:searchedUser", "MemberController.searchUser");
+Route.get(
+  "api/searchUser/:userEmail/:searchedUser",
+  "MemberController.searchUser"
+);
 Route.get("api/suggestedUser/:userEmail", "MemberController.suggestedUser");
 
 //Route.get('api/acquireSelfProfile/:userEmail','MemberController.acquireSelfProfile')
@@ -87,25 +90,3 @@ Route.get(
   "api/acquireOldActionFromFollower/:userEmail/:lastLikeID/:lastFollowID",
   "MemberController.acquireOldActionFromFollower"
 );
-
-//Location Test
-Route.get("api/location", async () => {
-  var NodeGeocoder = require("node-geocoder");
-
-  var options = {
-    provider: "google",
-    apiKey: "AIzaSyC0IRqt601KXqI8rMuzvkWEwwFosamtzv0"
-  };
-  var location = "";
-  var geocoder = NodeGeocoder(options);
-  location = await geocoder
-    .reverse({ lat: 45.767, lon: 4.833 })
-    .then(function(res) {
-      //Return location information
-      return res
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
-  location = location[0].formattedAddress
-});

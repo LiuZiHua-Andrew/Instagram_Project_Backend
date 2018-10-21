@@ -6,6 +6,16 @@ const Database = use("Database");
 const Post = use("App/Models/Post");
 
 class MemberController {
+  /*
+  Description:
+    Display recommended users
+
+  Algorithm: Jaccard Similarity
+
+                  |Intersection Set of Neighbor(i) and Neighbor(j)|
+    Score(x,y) =  -------------------------------------------------
+                      |Union Set of Neighbor(i) and Neighbor(j)|
+  */
   async suggestedUser({ params, response }) {
     const member = await Member.findBy("email", params.userEmail);
     const followings = await Database.from("followings").where({
@@ -187,6 +197,8 @@ class MemberController {
     lastFollowID:
     userEmail:
   }
+  Description:
+    Acquire former data for Activity Feed: User
   */
   async acquireOldActionFromFollower({ params, response }) {
     //email -> like -> truncate into 10 -> adding event attribute
@@ -279,6 +291,8 @@ class MemberController {
         isFollow:isFollow,
         reason:(When status is Fail)
   }
+  Description：
+    Acquire other user's profile
   */
   async acquireOthersProfile({ params, response }) {
     try {
@@ -371,7 +385,7 @@ class MemberController {
       console.log(error);
     }
   }
-  /* NOT USE
+  /*
   response{
     status:"Success/Fail",
     user:,
@@ -380,6 +394,9 @@ class MemberController {
     posts:,
     reason:(When status is Fail
   }
+
+  Description:
+    Acquire User's Profile
   */
   async acquireSelfProfile({ params, response }) {
     try {
@@ -416,18 +433,23 @@ class MemberController {
     reason:(When status is Fail),
     user:
   }
+
+  Description:
+    Search users
   */
   async searchUser({ params, response }) {
     try {
-      let data = []
-      if(params.userEmail === params.searchedUser){
+      let data = [];
+      if (params.userEmail === params.searchedUser) {
         let obj = new Object();
         obj.email = params.userEmail;
-        const user = await Database.table("members").where({'email':params.userEmail})
-        obj.profilePic=user[0].profilePic
-        obj.isFollow = false
-        data.push(obj)
-        return response.json({data:data})
+        const user = await Database.table("members").where({
+          email: params.userEmail
+        });
+        obj.profilePic = user[0].profilePic;
+        obj.isFollow = false;
+        data.push(obj);
+        return response.json({ data: data });
       }
 
       const user = await Database.table("members").where({
@@ -439,26 +461,26 @@ class MemberController {
           .where({ MemberID: params.userEmail })
           .where({ FollowingMemberID: params.searchedUser });
         let obj = new Object();
-        obj.isFollow = false
+        obj.isFollow = false;
         if (isFollow.length > 0) {
           obj.isFollow = true;
         }
 
         obj.email = user[0].email;
         obj.profilePic = user[0].profilePic;
-        data.push(obj)
-        return response.json({data:data});
+        data.push(obj);
+        return response.json({ data: data });
       } else {
-        return response.json({data:data})
+        return response.json({ data: data });
       }
     } catch (error) {
       console.log(error);
-      let data = []
-      return response.json({data:data})
+      let data = [];
+      return response.json({ data: data });
     }
   }
 
-  /*uploadPortrait
+  /*
   request{
     userEmail:"",
     userPortrait:{Picture stream}
@@ -467,6 +489,8 @@ class MemberController {
     status:"Success/Fail",
     reason:(When status is Fail)
   }
+  Description:
+    Upload/Update user's portrait
   */
   async updatePortrait({ request, response }) {
     try {
@@ -507,7 +531,7 @@ class MemberController {
     }
   }
 
-  /*Login
+  /*
   request{
     loginEmail:'',
     loginPass:''
@@ -516,6 +540,9 @@ class MemberController {
     status:'Success/Fail',
     reason:(Only when status is Fail)
   }
+
+  Description:
+    Users login with email and password
   */
   async login({ request, response }) {
     try {
@@ -552,6 +579,9 @@ class MemberController {
     status:Success/Fail,
     reason:(Only when status is Fail)
   }
+
+  Description:
+  Users register with email and password
   */
   async register({ request, response }) {
     try {

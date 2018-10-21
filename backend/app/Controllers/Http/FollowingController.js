@@ -6,8 +6,7 @@ const Database = use("Database");
  * Resourceful controller for interacting with followings
  */
 class FollowingController {
-
-  /*unfollow()
+  /*
   request{
     userEmail:"",
     followingID:""
@@ -16,13 +15,17 @@ class FollowingController {
     status:'Success/Fail',
     reason:(When status is Fail)
   }
+
+  Description:
+    Unfollow a user
   */
   async unfollow({ request, response }) {
     try {
       const member = Member.findBy("email", request.input("userEmail"));
+      const following = Member.findBy("email",request.input("followingID"));
       await Database.table("followings")
         .where({ MemberID: member.id })
-        .where({ FollowingMemberID: request.input("followingID") })
+        .where({ FollowingMemberID: following.id})
         .delete();
       return response.json({
         status: "Success"
@@ -36,7 +39,7 @@ class FollowingController {
     }
   }
 
-  /*follow
+  /*
   request{
     userEmail:'',
     followingID:''
@@ -46,13 +49,16 @@ class FollowingController {
     reason:(When status is Fail)
   }
 
+  Description:
+    Follow a user
   */
   async follow({ request, response }) {
     try {
       let following = new Following();
       const member = Member.findBy("email", request.input("userEmail"));
+      const following = Member.findBy("email",request.input("followingID"));
       following.MemberID = member.id;
-      following.FollowingMemberID = request.input("followingID");
+      following.FollowingMemberID = following.id;
       await following.save();
 
       response.json({

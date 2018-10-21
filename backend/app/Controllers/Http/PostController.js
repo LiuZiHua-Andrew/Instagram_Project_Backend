@@ -321,9 +321,9 @@ class PostController {
 
     //5) Filter out existed posts, sending from front-end
     let excludedArray = [];
-    let data = []
-    data = request.input("postID")
-    data = JSON.parse(data)
+    let data = [];
+    data = request.input("postID");
+    data = JSON.parse(data);
     posts.map(post => {
       let isIn = false;
       data.map(id => {
@@ -336,20 +336,6 @@ class PostController {
       }
     });
     posts = excludedArray;
-    // let postFilter = (element, index, array) => {
-    //   var data = request.input("postID");
-    //   var isUsed = true;
-    //   for (index in data) {
-    //     let post = data[index];
-    //     if (post === element.id) {
-    //       isUsed = false;
-    //     }
-    //   }
-    //   if (isUsed) {
-    //     return element;
-    //   }
-    // };
-    // posts = posts.filter(postFilter);
 
     //6) Format response data
     for (let index in posts) {
@@ -768,17 +754,7 @@ class PostController {
   */
   async postIns({ request, response }) {
     try {
-      // console.log('In')
-      // console.log(request.input('comment'))
-      // base64Image
-      //   .img(request.input("postPic"), "../../../public/UserPost", "base64Test",function(err,filepath){
-      //     console.log(err)
-      //     console.log(filepath)
-      //   })
-      // base64ToImage(request.input('postPic'),'../../../public/UserPost',{'fileName':'base64Test2','type':'png'})
-      // console.log('second')
-      //   return 'success'
-      //FIXME:Different file key for different content
+      //Different file key for different content
       const postPic = request.file("postPic", {
         types: ["image"],
         size: "15mb"
