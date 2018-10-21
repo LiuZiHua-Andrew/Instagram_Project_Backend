@@ -317,7 +317,7 @@ class PostController {
         lastIdIndex = index;
       }
     }
-    posts = posts.slice(lastIdIndex + 1);
+    posts = posts.slice(lastIdIndex);
 
     //5) Filter out existed posts, sending from front-end
     let excludedArray = [];
