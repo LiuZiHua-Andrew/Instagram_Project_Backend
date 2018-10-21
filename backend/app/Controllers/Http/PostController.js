@@ -268,9 +268,11 @@ class PostController {
 
   /*acquireOldPostsByLocation()
   request{
-    postID: []
-    lastID:
-    userEmail：
+    lon:,
+    lat,
+    lastPostID:
+    userEmail：,
+    postID:[]
   }
   */
   async acquireOldPostsByLocation({ request, response }) {
@@ -292,7 +294,7 @@ class PostController {
     );
 
     //3) Add distance attributes for each post
-    post.map(post => {
+    posts.map(post => {
       if (post.location != null) {
         let distance = GetDistance(
           post.lon,
@@ -314,13 +316,13 @@ class PostController {
     });
     let lastIdIndex;
     posts.map((post, index) => {
-      if (post.postID === request.input("lastID")) {
+      if (post.postID === request.input("lastPostID")) {
         lastIdIndex = index;
       }
     });
     posts = posts.slice(lastIdIndex + 1);
 
-    //5) Filter out existed posts
+    //5) Filter out existed posts, sending from front-end
     postFilter = (element, index, array) => {
       var data = request.input("postID");
       var isUsed = true;
