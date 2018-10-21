@@ -311,9 +311,9 @@ class PostController {
       return 0;
     });
     let lastIdIndex;
-    for (index in posts) {
+    for (let index in posts) {
       let post = posts[index];
-      if (post.postID === request.input("lastPostID")) {
+      if (post.id == request.input("lastPostID")) {
         lastIdIndex = index;
       }
     }
@@ -321,15 +321,18 @@ class PostController {
 
     //5) Filter out existed posts, sending from front-end
     let excludedArray = [];
+    let data = []
+    data = request.input("postID")
+    data = JSON.parse(data)
     posts.map(post => {
       let isIn = false;
-      request.input("postID").map(id => {
+      data.map(id => {
         if (post.id === id) {
           isIn = true;
         }
       });
       if (!isIn) {
-        excludedArray.push(user);
+        excludedArray.push(post);
       }
     });
     posts = excludedArray;
