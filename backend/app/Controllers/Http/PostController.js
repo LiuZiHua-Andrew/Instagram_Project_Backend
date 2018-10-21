@@ -10,6 +10,7 @@ const Like = use("App/Models/Like");
 const NodeGeocoder = use("node-geocoder");
 const base64ToImage = use("base64-to-image");
 const base64Image = use("base64-img");
+const SERVER = "http://115.146.84.191/UserPost/"
 
 /*Calculating Distance by (lat,lng)*/
 function Rad(Value) {
@@ -797,7 +798,7 @@ class PostController {
       const member = await Member.findBy("email", request.input("userEmail"));
       const post = new Post();
       post.MemberID = member.id;
-      post.postPic = filePath;
+      post.postPic = SERVER + fileName;
       post.location = location;
       post.lat = request.input("lat");
       post.log = request.input("log");
