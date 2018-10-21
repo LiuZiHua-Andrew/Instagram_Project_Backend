@@ -6,8 +6,8 @@ class FollowingSchema extends Schema {
   up () {
     this.create('followings', (table) => {
       table.increments()
-      table.integer('MemberID').unsigned().references('id').inTable('members');
-      table.integer('FollowingMemberID').unsigned().references('id').inTable('members');
+      table.integer('MemberID').unsigned()
+      table.integer('FollowingMemberID').unsigned()
       table.timestamps()
     })
   }
