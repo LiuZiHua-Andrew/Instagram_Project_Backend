@@ -433,7 +433,6 @@ class PostController {
       "MemberID",
       displayUserId
     );
-    console.log(posts);
     //3) Add distance attributes for each post
     posts.map(post => {
       if (post.location != null) {
