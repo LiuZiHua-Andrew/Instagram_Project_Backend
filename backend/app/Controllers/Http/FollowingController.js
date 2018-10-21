@@ -22,11 +22,11 @@ class FollowingController {
   async unfollow({ request, response }) {
     try {
       const member = Member.findBy("email", request.input("userEmail"));
-      const following = Member.findBy("email",request.input("followingID"));
-      const followingRelation = await Database.table("followings")
-        .where({ MemberID: member.id })
-        .where({ FollowingMemberID: following.id})
-        .delete()
+      const following = Member.findBy("email", request.input("followingID"));
+      await Database.table("followings")
+        .where("MemberID", member.id)
+        .where("FollowingMemberID", following.id)
+        .delete();
 
       return response.json({
         status: "Success"
@@ -57,7 +57,7 @@ class FollowingController {
     try {
       const follow = new Following();
       const member = Member.findBy("email", request.input("userEmail"));
-      const following = Member.findBy("email",request.input("followingID"));
+      const following = Member.findBy("email", request.input("followingID"));
       follow.MemberID = member.id;
       follow.FollowingMemberID = following.id;
       await follow.save();
