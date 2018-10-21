@@ -23,10 +23,11 @@ class FollowingController {
     try {
       const member = Member.findBy("email", request.input("userEmail"));
       const following = Member.findBy("email",request.input("followingID"));
-      await Database.table("followings")
+      const followingRelation = await Database.table("followings")
         .where({ MemberID: member.id })
         .where({ FollowingMemberID: following.id})
-        .delete();
+        .delete()
+
       return response.json({
         status: "Success"
       });

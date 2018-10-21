@@ -71,7 +71,7 @@ Route.get("/api/acquireComment/:postID", "CommentController.acquireComment");
 
 //Follow Table
 Route.post("api/follow", "FollowingController.follow");
-Route.delete("api/follow", "FollowingController.unfollow");
+Route.post("api/unfollow", "FollowingController.unfollow");
 
 //Activity Feed
 Route.get(
